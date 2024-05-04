@@ -1,17 +1,21 @@
-import { Box, Grid } from "@chakra-ui/react";
+import { Box, Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
 import SideBar from "../../components/sidebar/SideBar";
 
 function WarehousesPage() {
   return (
     <Grid
-      templateColumns="250px 1fr" // Sidebar width and remaining space
-      h="100vh" // Full height of the viewport
+      templateAreas={`
+    "nav main"
+    `}
+      gridTemplateColumns={"250px 1fr"}
+      h="100vh"
+      w="100vw" // Full height of the viewport
     >
       {/* Sidebar */}
-      <Box bg="white">
+      <GridItem area={"nav"}>
         <SideBar children={undefined} />
-      </Box>
+      </GridItem>
 
       {/* Main Content Area */}
     </Grid>
