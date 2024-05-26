@@ -33,7 +33,7 @@ export default function LoginPage() {
           <Stack spacing={6}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input type="email" pl={12} pr={12} />
+              <Input type="email" pl={3} pr={12} />
             </FormControl>
             <FormControl id="pharmacynumber">
               <FormLabel>Pharmacy Number</FormLabel>

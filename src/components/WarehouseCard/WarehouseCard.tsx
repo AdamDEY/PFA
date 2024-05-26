@@ -1,6 +1,6 @@
 import { Box, Flex, Text, Grid, Divider } from "@chakra-ui/react";
 
-interface WarehouseCardProps {
+export interface WarehouseCardProps {
   Warehouse: string;
   Location: string;
   Phone: string;
@@ -19,10 +19,10 @@ function WarehouseCard(props: WarehouseCardProps) {
       borderRadius="lg"
       overflow="hidden"
       bg="gray.100"
-      ml="4"
-      mb="4"
+      ml="8"
+      mt="4"
     >
-      <Flex display="flex" justifyContent="center" pt="2" pb="2">
+      <Flex justifyContent="center" pt="2" pb="2">
         <Text fontSize="32" fontWeight="bold">
           {Warehouse}
         </Text>

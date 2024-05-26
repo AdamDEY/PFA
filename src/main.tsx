@@ -10,8 +10,13 @@ import MedicinesPage from "./pages/medicine page/MedicinesPage.tsx";
 import OrdersPage from "./pages/orders page/OrdersPage.tsx";
 import HomePage from "./pages/home page/HomePage.tsx";
 import MedicineModal from "./components/medicinemodal/MedicineModal.tsx";
+import LoginPage from "./pages/login page/LoginPage.tsx";
 
 const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
   {
     path: "/",
     element: <HomePage />,
