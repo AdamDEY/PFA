@@ -5,6 +5,7 @@ import WarehouseCard, {
 } from "../../components/WarehouseCard/WarehouseCard";
 
 const warehouse: WarehouseCardProps = {
+  warehouseId: "debouchaari",
   Warehouse: "Debou Chaari",
   Location: "ariana",
   Phone: "5881714",

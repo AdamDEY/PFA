@@ -2,7 +2,19 @@ import { Box, Grid, GridItem, Stack, Wrap } from "@chakra-ui/react";
 
 import SideBar from "../../components/sidebar/SideBar";
 
-import WarehouseCard from "../../components/WarehouseCard/WarehouseCard";
+import WarehouseCard, {
+  WarehouseCardProps,
+} from "../../components/WarehouseCard/WarehouseCard";
+
+const warehouse: WarehouseCardProps = {
+  warehouseId: "debouchaari",
+  Warehouse: "Debou Chaari",
+  Location: "ariana",
+  Phone: "5881714",
+  Email: "khorma =.com",
+  Distance: "10 km away",
+  Status: "Open",
+};
 
 function HomePage() {
   return (
@@ -27,15 +39,7 @@ function HomePage() {
         <Stack p={0}>
           <Wrap spacing={1}>
             {[...Array(20)].map((_, index) => (
-              <WarehouseCard
-                Warehouse="Debou Chaari"
-                Location="ariana"
-                Phone="5881714"
-                Email="khorma =.com"
-                Distance="5 km away"
-                Status="Open"
-                key={index}
-              />
+              <WarehouseCard {...warehouse} key={index} />
             ))}
           </Wrap>
         </Stack>

@@ -25,7 +25,7 @@ function MedicineCard() {
       maxW="-moz-fit-content"
       bgColor="grey.800"
       maxH="-moz-fit-content"
-      ml="8"
+      ml="6"
       mb="4"
     >
       <CardBody>

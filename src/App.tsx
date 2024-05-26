@@ -1,8 +1,4 @@
-import React from "react";
-import WarehouseCard from "./components/WarehouseCard/WarehouseCard";
 import Home from "./pages/home page/HomePage";
-import Layout from "./pages/medicine page/MedicinesPage";
-import LoginPage from "./pages/login page/LoginPage";
 
 function App() {
   return (
