@@ -9,8 +9,46 @@ import {
   Heading,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { SyntheticEvent, useState } from "react";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const submit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        "http://localhost:3000/pharmacy/api/v1/auth/login",
+        {
+          mode: "cors",
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
+      // const response = await axios.post("/api/auth/login", {
+      //   email,
+      //   password,
+      // });
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login successful:", data);
+      } else {
+        console.error("Login failed:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+    setIsLoading(false);
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -33,15 +71,22 @@ export default function LoginPage() {
           <Stack spacing={6}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input type="email" pl={3} pr={12} />
+              <Input
+                type="email"
+                pl={3}
+                pr={12}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </FormControl>
-            <FormControl id="pharmacynumber">
-              <FormLabel>Pharmacy Number</FormLabel>
-              <Input type="number" />
-            </FormControl>
+
             <FormControl id="password">
               <FormLabel>Confidential Code</FormLabel>
-              <Input type="password" />
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </FormControl>
             <Stack spacing={10}>
               <Button
@@ -51,6 +96,8 @@ export default function LoginPage() {
                   bg: "green.500",
                   borderColor: "green.500",
                 }}
+                onClick={submit}
+                isLoading={isLoading}
               >
                 Sign in
               </Button>

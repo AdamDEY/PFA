@@ -11,6 +11,7 @@ import OrdersPage from "./pages/orders page/OrdersPage.tsx";
 import HomePage from "./pages/home page/HomePage.tsx";
 import LoginPage from "./pages/login page/LoginPage.tsx";
 import MedicineWarehousePage from "./pages/medicinewarehouse page/MedicineWarehousePage.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   {
@@ -38,16 +39,18 @@ const router = createBrowserRouter([
     element: <MedicineWarehousePage />,
   },
 ]);
-
+const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <RouterProvider router={router} />
-      {/* <MedicineModal
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider theme={theme}>
+        <RouterProvider router={router} />
+        {/* <MedicineModal
         name={"doliprane"}
         image={"lien taswira"}
         description={"takhralou fih"}
       /> */}
-    </ChakraProvider>
+      </ChakraProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

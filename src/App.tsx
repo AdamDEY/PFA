@@ -1,6 +1,16 @@
 import Home from "./pages/home page/HomePage";
 
 function App() {
+  // const [data,setdata]=useState(null);
+  // const [error,seterror]=useState(null);
+  // const [loading,setloading]=useState(false);
+  // useEffect(()=>{
+  //   setloading(true);
+  //   fetch("enponint").then(async r=>{
+  //     setdata(await r.json())
+
+  //   }).catch(e=>seterror(e)).finally(()=>setloading(false));
+  // },[]);
   return (
     <div className="app-container">
       {/* <WarehouseCard
@@ -13,6 +23,7 @@ function App() {
       /> */}
       {/* <LoginPage /> */}
       <Home />
+
       {/* <Layout /> */}
     </div>
   );

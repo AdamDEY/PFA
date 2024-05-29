@@ -20,18 +20,17 @@ interface MedicineModalProps {
   name: string;
   image: string;
   description: string;
+  price: number;
+  reference: string;
   isOpen: boolean;
-  onOpen: () => void;
   onClose: () => void;
 }
 
 function MedicineModal(props: MedicineModalProps) {
-  const { name, image, description, isOpen, onOpen, onClose } = props;
+  const { name, image, description, price, reference, isOpen, onClose } = props;
 
   return (
     <>
-      <Button onClick={onOpen}>Open Modal</Button>
-
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>

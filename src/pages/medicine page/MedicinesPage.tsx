@@ -1,11 +1,38 @@
 import { Box, Grid, GridItem, Stack, Wrap } from "@chakra-ui/react";
-
 import SideBar from "../../components/sidebar/SideBar";
 import MedicineCard from "../../components/medicinecard/MedicineCard";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useState } from "react";
 
 // Assume Sidebar component is defined elsewhere
-
+type Medicine = {
+  _id: string;
+  name: string;
+  description: string;
+  reference: string;
+  price: number;
+  __v: number;
+};
 function MedicinesPage() {
+  const fetchMedicines = async () => {
+    const response = await axios.get("http://localhost:3000/medicine");
+    return response.data.data.result;
+  };
+
+  const { isLoading, isError, data, error } = useQuery<Medicine[]>({
+    queryKey: ["medicines"],
+    queryFn: fetchMedicines,
+  });
+
+  if (isLoading) {
+    return <span>Loading...</span>;
+  }
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
+
   return (
     <Grid
       templateAreas={`
@@ -25,8 +52,15 @@ function MedicinesPage() {
         <Box w="100%" h="100%" mt="8">
           <Stack p={0} justifyContent="center" alignItems="center">
             <Wrap spacing={4}>
-              {[...Array(18)].map((_, index) => (
-                <MedicineCard key={index} />
+              {data?.map((med) => (
+                <MedicineCard
+                  key={med._id}
+                  name={med.name}
+                  image={med.name}
+                  description={med.description}
+                  price={med.price}
+                  reference={med.reference}
+                />
               ))}
             </Wrap>
           </Stack>

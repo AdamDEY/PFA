@@ -67,9 +67,7 @@ function OrdersPage() {
                           <Td>Day warehouse</Td>
                           <Td>500 $</Td>
                           <Td>Completed</Td>
-                          <Td>
-                            <Button>{">"}</Button>
-                          </Td>
+                          <Td>{<Button>{">"}</Button>}</Td>
                         </Tr>
                         <Tr>
                           <Td>#123123</Td>

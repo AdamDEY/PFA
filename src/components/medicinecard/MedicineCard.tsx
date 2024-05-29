@@ -18,7 +18,16 @@ import {
 import Doliprane from "../../assets/doliprane.png";
 import MedicineModal from "../medicinemodal/MedicineModal";
 
-function MedicineCard() {
+interface MedicineProps {
+  name: string;
+  image: string;
+  description: string;
+  price: number;
+  reference: string;
+}
+
+function MedicineCard(props: MedicineProps) {
+  const { name, image, description, price, reference } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Card
@@ -38,23 +47,16 @@ function MedicineCard() {
         </Box>
 
         <Stack spacing="1">
-          <Button onClick={onOpen}>Doliprane</Button>
+          <Button onClick={onOpen}>{name}</Button>
           {isOpen && (
             <>
-              <MedicineModal
-                name={"doliptane"}
-                image={Doliprane}
-                description={"ssssz"}
-                isOpen={isOpen}
-                onOpen={onOpen}
-                onClose={onClose}
-              />
+              <MedicineModal {...props} isOpen={isOpen} onClose={onClose} />
             </>
           )}
 
-          <Text>Lorem ipsum dolor sit amet</Text>
+          <Text>{description}</Text>
           <Text color="green.600" fontSize="2xl">
-            $450
+            {price}
           </Text>
         </Stack>
       </CardBody>
