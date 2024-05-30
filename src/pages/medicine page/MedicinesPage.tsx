@@ -6,10 +6,11 @@ import axios from "axios";
 import { useState } from "react";
 
 // Assume Sidebar component is defined elsewhere
-type Medicine = {
+export type Medicine = {
   _id: string;
   name: string;
   description: string;
+  image: string;
   reference: string;
   price: number;
   __v: number;
@@ -60,6 +61,8 @@ function MedicinesPage() {
                   description={med.description}
                   price={med.price}
                   reference={med.reference}
+                  _id={med._id}
+                  __v={med.__v}
                 />
               ))}
             </Wrap>

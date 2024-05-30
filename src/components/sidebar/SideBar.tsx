@@ -17,6 +17,7 @@ import {
 import { FiHome, FiStar, FiSettings, FiMenu } from "react-icons/fi";
 import { FaWarehouse } from "react-icons/fa6";
 import { MdListAlt, MdNotifications } from "react-icons/md";
+import { FaCartArrowDown } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 
@@ -32,6 +33,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Orders", icon: MdListAlt, url: "/orders" },
   { name: "Settings", icon: FiSettings, url: "/settings" },
   { name: "Notifications", icon: MdNotifications, url: "/notifications" },
+  { name: "Cart", icon: FaCartArrowDown, url: "/Cart" },
 ];
 
 export default function SideBar({ children }: { children: ReactNode }) {

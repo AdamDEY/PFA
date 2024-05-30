@@ -1,17 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-
 import "./index.css";
 import { ChakraProvider } from "@chakra-ui/react";
-import theme from "./theme.tsx";
+import theme from "./theme";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import WarehousesPage from "./pages/warehouses page/WarehousesPage.tsx";
-import MedicinesPage from "./pages/medicine page/MedicinesPage.tsx";
-import OrdersPage from "./pages/orders page/OrdersPage.tsx";
-import HomePage from "./pages/home page/HomePage.tsx";
-import LoginPage from "./pages/login page/LoginPage.tsx";
-import MedicineWarehousePage from "./pages/medicinewarehouse page/MedicineWarehousePage.tsx";
+import WarehousesPage from "./pages/warehouses page/WarehousesPage";
+import MedicinesPage from "./pages/medicine page/MedicinesPage";
+import OrdersPage from "./pages/orders page/OrdersPage";
+import HomePage from "./pages/home page/HomePage";
+import LoginPage from "./pages/login page/LoginPage";
+import MedicineWarehousePage from "./pages/medicinewarehouse page/MedicineWarehousePage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CartProvider } from "./context/CartContext";
+import CartPage from "./pages/cart page/CartPage";
 
 const router = createBrowserRouter([
   {
@@ -35,21 +36,24 @@ const router = createBrowserRouter([
     element: <WarehousesPage />,
   },
   {
-    path: "/warehouses/:warehouseId", // Add dynamic route
+    path: "/warehouses/:warehouseId",
     element: <MedicineWarehousePage />,
   },
+  {
+    path: "/cart",
+    element: <CartPage />,
+  },
 ]);
+
 const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
-        <RouterProvider router={router} />
-        {/* <MedicineModal
-        name={"doliprane"}
-        image={"lien taswira"}
-        description={"takhralou fih"}
-      /> */}
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
       </ChakraProvider>
     </QueryClientProvider>
   </React.StrictMode>
