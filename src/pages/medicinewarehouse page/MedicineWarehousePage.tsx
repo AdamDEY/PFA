@@ -4,7 +4,7 @@ import MedicineCard from "../../components/medicinecard/MedicineCard";
 
 // Assume Sidebar component is defined elsewhere
 
-function MedicinesPage() {
+function MedicineWarehousePage() {
   return (
     <Grid
       templateAreas={`
@@ -25,7 +25,7 @@ function MedicinesPage() {
           <Stack p={0} justifyContent="center" alignItems="center">
             <Wrap spacing={4}>
               {[...Array(18)].map((_, index) => (
-                <MedicineCard key={index} />
+                <MedicineCard key={index} _id={""} name={""} description={""} reference={""} price={0} __v={0} image={""} />
               ))}
             </Wrap>
           </Stack>
@@ -35,4 +35,4 @@ function MedicinesPage() {
   );
 }
 
-export default MedicinesPage;
+export default MedicineWarehousePage;

@@ -34,7 +34,7 @@ function HomePage() {
       {/* Main Content Area */}
       <GridItem area={"main"} ml="4">
         <Box bg=" gray" h="80vh" w="100vh" m="auto" mb="5">
-          MAPS{" "}
+          MAPS
         </Box>
         <Stack p={0}>
           <Wrap spacing={1}>
