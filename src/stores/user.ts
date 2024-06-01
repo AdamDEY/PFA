@@ -2,13 +2,11 @@ import axios from "axios";
 import { create } from "zustand";
 import { jwtDecode } from "jwt-decode";
 
-const BASE_URL = "http://localhost:4401/api";
+const BASE_URL = "http://localhost:3000/pharmacy/api/v1/auth";
 
 interface User {
   userName: string;
   userId: string;
-  isAdmin: boolean;
-  verified: boolean;
 }
 
 interface UserStore {
@@ -34,20 +32,23 @@ export const useUserStore = create<UserStore>((set) => ({
 
   login: async (loginData: LoginData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/users/login`, loginData);
-      if (response.status === 200) {
-        const { token } = response.data;
+      const response = await axios.post(`${BASE_URL}/login`, loginData);
+      console.log("resp", response);
 
-        const decodedToken: any = jwtDecode(token);
+      if (response.status === 201) {
+        // console.log("response.data", response.data.data.result.response.accessToken  );
+        const  accessToken  = response.data.data.result.response.accessToken ;
+        console.log("token", accessToken);
+
+        const decodedToken: any = jwtDecode(accessToken);
 
         const user: User = {
-          userName: decodedToken.name,
-          userId: decodedToken.userId,
-          isAdmin: decodedToken.isAdmin,
-          verified: decodedToken.verified,
+          userName: decodedToken.username,
+          userId: decodedToken.client_id,
         };
+        console.log('user',user )
 
-        localStorage.setItem("token", token);
+        localStorage.setItem("token", accessToken);
         set({ user });
       }
     } catch (error) {
@@ -55,9 +56,10 @@ export const useUserStore = create<UserStore>((set) => ({
       throw error;
     }
   },
+
   signUp: async (signUpData: SignUpData) => {
     try {
-      const response = await axios.post(`${BASE_URL}/users/signup`, signUpData);
+      const response = await axios.post(`${BASE_URL}/signup`, signUpData);
       if (response.status === 201) {
         await useUserStore.getState().login({
           email: signUpData.email,
@@ -69,6 +71,7 @@ export const useUserStore = create<UserStore>((set) => ({
       throw error;
     }
   },
+
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiresIn");
@@ -83,8 +86,6 @@ function getUserFromLocalStorage(): User | null {
     return {
       userName: decodedToken.name,
       userId: decodedToken.userId,
-      isAdmin: decodedToken.isAdmin,
-      verified: decodedToken.verified,
     };
   }
   return null;
