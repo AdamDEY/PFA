@@ -31,7 +31,6 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Medicines", icon: FiStar, url: "/medicines" },
   { name: "Warehouses", icon: FaWarehouse, url: "/warehouses" },
   { name: "Orders", icon: MdListAlt, url: "/orders" },
-  { name: "Settings", icon: FiSettings, url: "/settings" },
   { name: "Notifications", icon: MdNotifications, url: "/notifications" },
   { name: "Cart", icon: FaCartArrowDown, url: "/Cart" },
 ];
