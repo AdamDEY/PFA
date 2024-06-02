@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import {
   IconButton,
   Box,
@@ -14,12 +14,12 @@ import {
   BoxProps,
   FlexProps,
 } from "@chakra-ui/react";
-import { FiHome, FiStar, FiSettings, FiMenu } from "react-icons/fi";
+import { FiHome, FiStar, FiMenu } from "react-icons/fi";
 import { FaWarehouse } from "react-icons/fa6";
 import { MdListAlt, MdNotifications } from "react-icons/md";
 import { FaCartArrowDown } from "react-icons/fa";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
+
 
 interface LinkItemProps {
   name: string;

@@ -16,6 +16,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUserStore } from "../../stores/user";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Define form schema
 const loginSchema = z.object({
@@ -35,6 +36,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const { login } = useUserStore();
+  const navigate = useNavigate();
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setLoading(true);
@@ -43,29 +45,23 @@ export default function LoginPage() {
       await login(values);
       toast({
         title: "Success",
-        description: "Logged in successfully! Maalem",
+        description: "Logged in successfully!",
+        status: "success",
         duration: 3000,
       });
+      navigate('/home'); // Redirect to home page
     } catch (error: any) {
       console.error("Error logging in: ", error);
 
-      if (error.response && error.response.data.message) {
-        toast({
-          title: "Error",
-          description: error.response.data.message,
-          variant: "destructive",
-          duration: 3000,
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: "Failed to log in. Please try again.",
-          variant: "destructive",
-          duration: 3000,
-        });
-      }
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to log in. Please try again.",
+        status: "error",
+        duration: 3000,
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
