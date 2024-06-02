@@ -13,13 +13,15 @@ import {
   useDisclosure,
   BoxProps,
   FlexProps,
+  Button,
 } from "@chakra-ui/react";
 import { FiHome, FiStar, FiMenu } from "react-icons/fi";
 import { FaWarehouse } from "react-icons/fa6";
 import { MdListAlt, MdNotifications } from "react-icons/md";
 import { FaCartArrowDown } from "react-icons/fa";
 import { IconType } from "react-icons";
-
+import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../stores/user";
 
 interface LinkItemProps {
   name: string;
@@ -32,21 +34,22 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Warehouses", icon: FaWarehouse, url: "/warehouses" },
   { name: "Orders", icon: MdListAlt, url: "/orders" },
   { name: "Notifications", icon: MdNotifications, url: "/notifications" },
-  { name: "Cart", icon: FaCartArrowDown, url: "/Cart" },
+  { name: "Cart", icon: FaCartArrowDown, url: "/cart" },
 ];
 
 export default function SideBar({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { logout } = useUserStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
-    <Box
-      minH="100vh"
-      bg={useColorModeValue("white.100", "white.900")}
-      w="250px"
-    >
-      <SidebarContent
-        onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
-      />
+    <Box minH="100vh" bg={useColorModeValue("white.100", "white.900")} w="250px">
+      <SidebarContent onClose={onClose} handleLogout={handleLogout} display={{ base: "none", md: "block" }} />
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
@@ -57,7 +60,7 @@ export default function SideBar({ children }: { children: ReactNode }) {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} />
+          <SidebarContent onClose={onClose} handleLogout={handleLogout} />
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
@@ -71,9 +74,10 @@ export default function SideBar({ children }: { children: ReactNode }) {
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
+  handleLogout: () => void;
 }
 
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({ onClose, handleLogout, ...rest }: SidebarProps) => {
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -95,12 +99,22 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           {link.name}
         </NavItem>
       ))}
+      <NavItem icon={null} to="#" onClick={handleLogout} _hover={{ bg: "white" }}>
+        <Button
+          bg="red.400"
+          color="white"
+          _hover={{ bg: "red.500" }}
+          w="100%"
+        >
+          Logout
+        </Button>
+      </NavItem>
     </Box>
   );
 };
 
 interface NavItemProps extends FlexProps {
-  icon: IconType;
+  icon: IconType | null;
   to: string;
 }
 const NavItem = ({ icon, children, to, ...rest }: NavItemProps) => {

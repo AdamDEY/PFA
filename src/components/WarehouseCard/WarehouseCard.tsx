@@ -37,6 +37,8 @@ function WarehouseCard(props: WarehouseCardProps) {
       bg="gray.100"
       ml="6"
       mt="4"
+      pl={8}
+      pr={8}
     >
       <LinkBox>
         <LinkOverlay as={Link} to={`/warehouses/${_id}`}>
@@ -46,17 +48,17 @@ function WarehouseCard(props: WarehouseCardProps) {
             </Text>
           </Flex>
         </LinkOverlay>
-        <Grid justifyItems="flex-start" pl="8">
+        <Grid justifyItems="flex-start" >
             <Text fontWeight="bold"> Address </Text>
             <Text> {address}</Text>
           </Grid>
-        <Flex justifyContent="space-between" pl="8" pr="8">
+        <Flex justifyContent="space-between" >
         
           <Grid justifyItems="flex-start">
             <Text fontWeight="bold"> City </Text>
             <Text>{city} </Text>
           </Grid>
-          <Grid justifyItems="flex-start" pl="8">
+          <Grid justifyItems="flex-start" >
           <Text fontWeight="bold"> Distance </Text>
           <Text>{distance}</Text>
         </Grid>
@@ -68,11 +70,11 @@ function WarehouseCard(props: WarehouseCardProps) {
         </Box>
 
         <Flex justifyContent="space-between" pb="2">
-          <Box pl="8">
+          <Box >
             <Text>{duration} </Text>
           </Box>
 
-          <Flex pr="8">
+          <Flex >
             <Box w="20px" h="20px" borderRadius="full" bg="green" mr="1" />
             <Text>{'Status'}</Text>
           </Flex>

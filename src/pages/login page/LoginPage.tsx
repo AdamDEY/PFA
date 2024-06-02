@@ -49,7 +49,7 @@ export default function LoginPage() {
         status: "success",
         duration: 3000,
       });
-      navigate('/home'); // Redirect to home page
+      navigate('/'); // Redirect to home page
     } catch (error: any) {
       console.error("Error logging in: ", error);
 
