@@ -77,7 +77,7 @@ function MedicineCard(props: MedicineProps) {
         </Box>
 
         <Stack spacing="1">
-          <Button onClick={onOpen}>{name}</Button>
+          <Button onClick={onOpen} bg={'white'}>{name}</Button>
           {isOpen && (
             <>
               <MedicineModal {...props} isOpen={isOpen} onClose={onClose} />
