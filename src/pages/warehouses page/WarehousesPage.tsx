@@ -1,8 +1,6 @@
 import { Flex, Grid, GridItem, Wrap } from "@chakra-ui/react";
 import SideBar from "../../components/sidebar/SideBar";
-import WarehouseCard, {
-  WarehouseCardProps,
-} from "../../components/WarehouseCard/WarehouseCard";
+import WarehouseCard from "../../components/WarehouseCard/WarehouseCard";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { FetchProps } from "../home page/HomePage";
