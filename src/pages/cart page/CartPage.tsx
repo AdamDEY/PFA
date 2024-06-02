@@ -1,13 +1,57 @@
-// pages/CartPage.tsx
-import React from "react";
-import { Box, Stack, Text, Button, Grid, GridItem } from "@chakra-ui/react";
+import { Box, Stack, Text, Button, Grid, GridItem, Flex, useToast } from "@chakra-ui/react";
 import { useCart } from "../../context/CartContext";
-
+import axios from "axios";
 import SideBar from "../../components/sidebar/SideBar";
 
 function CartPage() {
   const { cart, removeFromCart } = useCart();
-  console.log("Cart contents:", cart);
+  const toast = useToast();
+  const getToken = (): string | null => {
+    return localStorage.getItem('token');
+  };
+
+  const confirmOrder = async () => {
+    const distributorId = "6625a720f00b7e0916efaf00"; // Replace with the actual distributor ID
+    const orderData = {
+      distributor: distributorId,
+      medicine_quantity: cart.map(item => ({
+        medicine: item._id, // Ensure to use _id if that is required by the server
+        quantity: item.quantity,
+        price:item.price,
+      })),
+    };
+    
+    const token = getToken();
+
+    try {
+
+      const response = await axios.post("http://localhost:3000/order/makeorder", orderData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Replace with your actual access token
+        }
+      });
+      
+      toast({
+        title: "Order Confirmed",
+        description: "Your order has been successfully placed.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      console.log("Order response:", response.data);
+      // Optionally clear the cart or handle post-order actions here
+    } catch (error) {
+      toast({
+        title: "Order Failed",
+        description: "There was an issue placing your order. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      console.error("Order error:", error);
+    }
+  };
 
   return (
     <Grid
@@ -27,9 +71,14 @@ function CartPage() {
       <GridItem area={"main"}>
         <Box w="100%" h="100%" mt="8">
           <Box p={4}>
-            <Text fontSize="2xl" mb={4}>
-              Shopping Cart
-            </Text>
+            <Flex justifyContent="space-between" alignItems="center">
+              <Text fontSize="2xl" mb={4}>
+                Shopping Cart
+              </Text>
+              <Button colorScheme="teal" onClick={confirmOrder}>
+                Confirm Order
+              </Button>
+            </Flex>
             {cart.length === 0 ? (
               <Text>Your cart is empty.</Text>
             ) : (

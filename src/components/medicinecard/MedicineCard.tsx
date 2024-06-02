@@ -14,8 +14,8 @@ import {
   NumberDecrementStepper,
   Box,
   Text,
+  useToast, // Import useToast from Chakra UI
 } from "@chakra-ui/react";
-import Doliprane from "../../assets/doliprane.png";
 import MedicineModal from "../medicinemodal/MedicineModal";
 import { useCart } from "../../context/CartContext";
 import { useState } from "react";
@@ -27,14 +27,41 @@ interface MedicineProps {
   reference: string;
   price: number;
   __v: number;
-  image: string;
+  imageUrl: any;
 }
 
 function MedicineCard(props: MedicineProps) {
-  const { _id, name, description, reference, price, __v, image } = props;
+  const { _id, name, description, reference, price, __v, imageUrl } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(0);
+  const toast = useToast(); // Initialize the toast hook
+
+  const handleAddToCart = () => {
+    addToCart(
+      { _id, name, imageUrl, description, price, reference, __v },
+      quantity
+    );
+    console.log("Added to cart:", {
+      _id,
+      name,
+      imageUrl,
+      description,
+      price,
+      reference,
+      __v,
+      quantity,
+    });
+
+    // Show toast notification
+    toast({
+      title: "Added to cart",
+      description: `${name} has been added to your cart with quantity ${quantity}.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
 
   return (
     <Card
@@ -46,7 +73,7 @@ function MedicineCard(props: MedicineProps) {
     >
       <CardBody>
         <Box display="flex" alignItems="center" justifyContent="center">
-          <img src={Doliprane} alt={name} width="150" />
+          <img src={imageUrl} alt={name} width="150" />
         </Box>
 
         <Stack spacing="1">
@@ -66,26 +93,7 @@ function MedicineCard(props: MedicineProps) {
       <Divider />
       <CardFooter>
         <ButtonGroup spacing="2">
-          <Button
-            variant="solid"
-            colorScheme="green"
-            onClick={() => {
-              addToCart(
-                { _id, name, image, description, price, reference, __v },
-                quantity
-              );
-              console.log("Added to cart:", {
-                _id,
-                name,
-                image,
-                description,
-                price,
-                reference,
-                __v,
-                quantity,
-              });
-            }}
-          >
+          <Button variant="solid" colorScheme="green" onClick={handleAddToCart}>
             Add to cart
           </Button>
           <NumberInput

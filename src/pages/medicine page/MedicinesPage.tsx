@@ -10,7 +10,7 @@ export type Medicine = {
   _id: string;
   name: string;
   description: string;
-  image: string;
+  imageUrl: any;
   reference: string;
   price: number;
   __v: number;
@@ -18,8 +18,22 @@ export type Medicine = {
 function MedicinesPage() {
   const fetchMedicines = async () => {
     const response = await axios.get("http://localhost:3000/medicine");
-    return response.data.data.result;
+    const result=response.data.data.result;
+    
+    result.map(async (medicine:any)=>{
+      const imagePath = medicine.imageUrl;
+      const imageResponse= await axios.get(imagePath,{
+       
+        headers: {
+            mode: 'no-cors',
+          }});
+      medicine['imageUrl']=imageResponse;
+    })
+    console.log('result', result);
+    return result;
+
   };
+
 
   const { isLoading, isError, data, error } = useQuery<Medicine[]>({
     queryKey: ["medicines"],
@@ -53,18 +67,21 @@ function MedicinesPage() {
         <Box w="100%" h="100%" mt="8">
           <Stack p={0} justifyContent="center" alignItems="center">
             <Wrap spacing={4}>
-              {data?.map((med) => (
-                <MedicineCard
-                  key={med._id}
-                  name={med.name}
-                  image={med.name}
-                  description={med.description}
-                  price={med.price}
-                  reference={med.reference}
-                  _id={med._id}
-                  __v={med.__v}
-                />
-              ))}
+            {data?.map((med) => {
+                console.log(med); // Log each medicine
+                return (
+                  <MedicineCard
+                    key={med._id}
+                    name={med.name}
+                    imageUrl={med.imageUrl}
+                    description={med.description}
+                    price={med.price}
+                    reference={med.reference}
+                    _id={med._id}
+                    __v={med.__v}
+                  />
+                );
+              })}
             </Wrap>
           </Stack>
         </Box>

@@ -20,6 +20,7 @@ export interface WarehouseCardProps{
   address: string;
   distance:string;
   duration:string;
+  // status:string;
 
 }
 
@@ -38,35 +39,37 @@ function WarehouseCard(props: WarehouseCardProps) {
       mt="4"
     >
       <LinkBox>
-        <LinkOverlay as={Link} to={`/warehouses/bouzid`}>
+        <LinkOverlay as={Link} to={`/warehouses/${_id}`}>
           <Flex justifyContent="center" pt="2" pb="2">
             <Text fontSize="32" fontWeight="bold">
               {name}
             </Text>
-            
           </Flex>
         </LinkOverlay>
+        <Grid justifyItems="flex-start" pl="8">
+            <Text fontWeight="bold"> Address </Text>
+            <Text> {address}</Text>
+          </Grid>
         <Flex justifyContent="space-between" pl="8" pr="8">
+        
           <Grid justifyItems="flex-start">
             <Text fontWeight="bold"> City </Text>
             <Text>{city} </Text>
           </Grid>
-          <Grid justifyItems="flex-start">
-            <Text fontWeight="bold"> Adress </Text>
-            <Text> {address}</Text>
-          </Grid>
-        </Flex>
-        <Grid justifyItems="flex-start" pl="8">
+          <Grid justifyItems="flex-start" pl="8">
           <Text fontWeight="bold"> Distance </Text>
           <Text>{distance}</Text>
         </Grid>
+          
+        </Flex>
+        
         <Box pt="2" pb="2">
           <Divider />
         </Box>
 
         <Flex justifyContent="space-between" pb="2">
           <Box pl="8">
-            <Text>{distance} </Text>
+            <Text>{duration} </Text>
           </Box>
 
           <Flex pr="8">

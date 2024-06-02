@@ -21,7 +21,7 @@ import { useCart } from "../../context/CartContext";
 interface MedicineModalProps {
   _id: string;
   name: string;
-  image: string;
+  imageUrl: any;
   description: string;
   price: number;
   reference: string;
@@ -34,7 +34,7 @@ function MedicineModal(props: MedicineModalProps) {
   const {
     _id,
     name,
-    image,
+    imageUrl,
     description,
     price,
     reference,
@@ -53,7 +53,7 @@ function MedicineModal(props: MedicineModalProps) {
           <ModalHeader>{name}</ModalHeader>
           <ModalCloseButton />
           <Flex bg="white" justifyContent="center" alignItems="center">
-            <img src={image} alt={name} width="150" />
+            <img src={imageUrl} alt={name} width="100" />
           </Flex>
           <ModalBody>
             <Text>{description}</Text>
@@ -67,7 +67,7 @@ function MedicineModal(props: MedicineModalProps) {
               variant="ghost"
               onClick={() =>
                 addToCart(
-                  { _id, name, image, description, price, reference, __v },
+                  { _id, name, imageUrl, description, price, reference, __v },
                   quantity
                 )
               }
