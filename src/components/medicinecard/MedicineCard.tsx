@@ -72,7 +72,7 @@ function MedicineCard(props: MedicineProps) {
       mb="4"
     >
       <CardBody>
-        <Box display="flex" alignItems="center" justifyContent="center">
+        <Box display="flex" alignItems="center" justifyContent="center" h="150px" mb={4}>
           <img src={imageUrl} alt={name} width="150" />
         </Box>
 
