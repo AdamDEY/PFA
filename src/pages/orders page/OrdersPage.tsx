@@ -16,9 +16,40 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import SideBar from "../../components/sidebar/SideBar";
 
+// Fetch orders from the API
+const getToken = (): string | null => {
+  return localStorage.getItem('token');
+};
+
+const fetchOrders = async () => {
+  const token = getToken();
+  const response = await axios.get("http://localhost:3000/order/pharmacy", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  console.log('response', response.data.data.result);
+  return response.data.data.result; // Adjust this if the API response structure is different
+};
+
 function OrdersPage() {
+  const { data, isLoading, isError, error } = useQuery<any[]>({
+    queryKey: ["orders"],
+    queryFn: fetchOrders,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <Grid
       templateAreas={`
@@ -26,8 +57,7 @@ function OrdersPage() {
     `}
       gridTemplateColumns={"250px 1fr"}
       h="100vh"
-      w="100vw"
-      // Full height of the viewport
+      w="100vw" // Full height of the viewport
     >
       {/* Sidebar */}
       <GridItem area={"nav"}>
@@ -61,34 +91,18 @@ function OrdersPage() {
                         </Tr>
                       </Thead>
                       <Tbody>
-                        <Tr>
-                          <Td>#123123</Td>
-                          <Td>2 min ago</Td>
-                          <Td>Day warehouse</Td>
-                          <Td>500 $</Td>
-                          <Td>Completed</Td>
-                          <Td>{<Button>{">"}</Button>}</Td>
-                        </Tr>
-                        <Tr>
-                          <Td>#123123</Td>
-                          <Td>2 min ago</Td>
-                          <Td>Day warehouse</Td>
-                          <Td>500 $</Td>
-                          <Td>Completed</Td>
-                          <Td>
-                            <Button>{">"}</Button>
-                          </Td>
-                        </Tr>
-                        <Tr>
-                          <Td>#123123</Td>
-                          <Td>2 min ago</Td>
-                          <Td>Day warehouse</Td>
-                          <Td>500 $</Td>
-                          <Td>Completed</Td>
-                          <Td>
-                            <Button>{">"}</Button>
-                          </Td>
-                        </Tr>
+                        {data?.map((order: any) => (
+                          <Tr key={order._id}>
+                            <Td>{order._id}</Td>
+                            <Td>{new Date(order.createdAt).toLocaleString()}</Td>
+                            <Td>{order.distributor.name}</Td>
+                            <Td>{order.total_price} $</Td>
+                            <Td>{order.status}</Td>
+                            <Td>
+                              <Button>{">"}</Button>
+                            </Td>
+                          </Tr>
+                        ))}
                       </Tbody>
                     </Table>
                   </TableContainer>
