@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -15,6 +16,7 @@ import {
   Th,
   Thead,
   Tr,
+  Collapse,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -22,7 +24,7 @@ import SideBar from "../../components/sidebar/SideBar";
 
 // Fetch orders from the API
 const getToken = (): string | null => {
-  return localStorage.getItem('token');
+  return localStorage.getItem("token");
 };
 
 const fetchOrders = async () => {
@@ -32,7 +34,7 @@ const fetchOrders = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-  console.log('response', response.data.data.result);
+  console.log("response", response.data.data.result);
   return response.data.data.result; // Adjust this if the API response structure is different
 };
 
@@ -41,6 +43,15 @@ function OrdersPage() {
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
+
+  const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>({});
+
+  const handleShowMore = (orderId: string) => {
+    setExpandedRows((prev) => ({
+      ...prev,
+      [orderId]: !prev[orderId],
+    }));
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -79,7 +90,8 @@ function OrdersPage() {
               <TabPanel>
                 <Box>
                   <TableContainer>
-                    <Table variant="striped">
+                    <Table variant="striped" >
+                      
                       <Thead>
                         <Tr>
                           <Th>Order ID</Th>
@@ -90,18 +102,57 @@ function OrdersPage() {
                           <Th>Show more</Th>
                         </Tr>
                       </Thead>
+                      
                       <Tbody>
                         {data?.map((order: any) => (
-                          <Tr key={order._id}>
-                            <Td>{order._id}</Td>
-                            <Td>{new Date(order.createdAt).toLocaleString()}</Td>
-                            <Td>{order.distributor.name}</Td>
-                            <Td>{order.total_price} $</Td>
-                            <Td>{order.status}</Td>
-                            <Td>
-                              <Button>{">"}</Button>
-                            </Td>
-                          </Tr>
+                         
+                          <React.Fragment key={order._id} >
+                            <Tr>
+                              <Td>{order._id}</Td>
+                              <Td>{new Date(order.createdAt).toLocaleString()}</Td>
+                              <Td>{order.distributor.name}</Td>
+                              <Td>{order.total_price} $</Td>
+                              <Td>{order.status}</Td>
+                              <Td>
+                                <Button onClick={() => handleShowMore(order._id)}>
+                                  {expandedRows[order._id] ? "▼" : "▶"}
+                                </Button>
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td colSpan={6} p={0} m={0}>
+                                <Collapse in={expandedRows[order._id]}>
+                                  <Box p={4} borderWidth="1px" borderRadius="lg">
+                                    <Table variant="simple">
+                                      <Thead>
+                                        <Tr>
+                                          <Th>Name</Th>
+                                          <Th>Total Price</Th>
+                                          <Th>Quantity</Th>
+                                        </Tr>
+                                      </Thead>
+                                      <Tbody>
+                                        {order.medicine_quantity.map((item: any, index: number) => (
+                                          item ? (
+                                            <Tr key={index}>
+                                              <Td>{item.medicine.name}</Td>
+                                              <Td>${item.medicineTotalPrice}</Td>
+                                              <Td>{item.quantity}</Td>
+                                            </Tr>
+                                          ) : (
+                                            <Tr key={index}>
+                                              <Td colSpan={3}>Invalid item data</Td>
+                                            </Tr>
+                                          )
+                                        ))}
+                                      </Tbody>
+                                    </Table>
+                                  </Box>
+                                </Collapse>
+                              </Td>
+                            </Tr>
+                          </React.Fragment>
+                      
                         ))}
                       </Tbody>
                     </Table>
