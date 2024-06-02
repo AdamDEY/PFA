@@ -9,18 +9,20 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-export interface WarehouseCardProps {
+export interface DistanceProps {
+  distance: string;
+  duration: string;}
+
+export interface WarehouseCardProps{
   _id: string;
   name: string;
-  Location: string;
-  Phone: string;
-  Email: string;
-  Distance: string;
-  Status: string;
+  city: string;
+  adress: string;
+
 }
 
 function WarehouseCard(props: WarehouseCardProps) {
-  const { _id, name, Location, Phone, Email, Distance, Status } =
+  const { _id, name, city, adress} =
     props;
 
   return (
@@ -44,16 +46,16 @@ function WarehouseCard(props: WarehouseCardProps) {
         <Flex justifyContent="space-between" pl="8" pr="8">
           <Grid justifyItems="flex-start">
             <Text fontWeight="bold"> Location </Text>
-            <Text>{Location} </Text>
+            <Text>{city} </Text>
           </Grid>
           <Grid justifyItems="flex-start">
             <Text fontWeight="bold"> Phone </Text>
-            <Text> {Phone}</Text>
+            <Text> {adress}</Text>
           </Grid>
         </Flex>
         <Grid justifyItems="flex-start" pl="8">
           <Text fontWeight="bold"> Email </Text>
-          <Text>{Email}</Text>
+          <Text>{'Email'}</Text>
         </Grid>
         <Box pt="2" pb="2">
           <Divider />
@@ -61,12 +63,12 @@ function WarehouseCard(props: WarehouseCardProps) {
 
         <Flex justifyContent="space-between" pb="2">
           <Box pl="8">
-            <Text>{Distance} </Text>
+            <Text>{'Distance'} </Text>
           </Box>
 
           <Flex pr="8">
             <Box w="20px" h="20px" borderRadius="full" bg="green" mr="1" />
-            <Text>{Status}</Text>
+            <Text>{'Status'}</Text>
           </Flex>
         </Flex>
       </LinkBox>
