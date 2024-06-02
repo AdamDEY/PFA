@@ -10,8 +10,8 @@ import {
 import { Link } from "react-router-dom";
 
 export interface WarehouseCardProps {
-  warehouseId: string;
-  Warehouse: string;
+  _id: string;
+  name: string;
   Location: string;
   Phone: string;
   Email: string;
@@ -20,7 +20,7 @@ export interface WarehouseCardProps {
 }
 
 function WarehouseCard(props: WarehouseCardProps) {
-  const { warehouseId, Warehouse, Location, Phone, Email, Distance, Status } =
+  const { _id, name, Location, Phone, Email, Distance, Status } =
     props;
 
   return (
@@ -34,10 +34,10 @@ function WarehouseCard(props: WarehouseCardProps) {
       mt="4"
     >
       <LinkBox>
-        <LinkOverlay as={Link} to={`/warehouses/${warehouseId}`}>
+        <LinkOverlay as={Link} to={`/warehouses/${_id}`}>
           <Flex justifyContent="center" pt="2" pb="2">
             <Text fontSize="32" fontWeight="bold">
-              {Warehouse}
+              {name}
             </Text>
           </Flex>
         </LinkOverlay>

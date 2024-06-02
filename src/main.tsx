@@ -14,6 +14,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/cart page/CartPage";
 
+
+
 const router = createBrowserRouter([
   {
     path: "/login",
