@@ -25,7 +25,7 @@ function MedicineWarehousePage() {
           <Stack p={0} justifyContent="center" alignItems="center">
             <Wrap spacing={4}>
               {[...Array(18)].map((_, index) => (
-                <MedicineCard key={index} _id={""} name={""} description={""} reference={""} price={0} __v={0} image={""} />
+                <MedicineCard key={index} _id={""} name={""} description={""} reference={""} price={123} __v={0} image={""} />
               ))}
             </Wrap>
           </Stack>

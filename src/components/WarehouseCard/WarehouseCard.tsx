@@ -17,12 +17,14 @@ export interface WarehouseCardProps{
   _id: string;
   name: string;
   city: string;
-  adress: string;
+  address: string;
+  distance:string;
+  duration:string;
 
 }
 
 function WarehouseCard(props: WarehouseCardProps) {
-  const { _id, name, city, adress} =
+  const { _id, name, city, address,distance,duration} =
     props;
 
   return (
@@ -36,26 +38,27 @@ function WarehouseCard(props: WarehouseCardProps) {
       mt="4"
     >
       <LinkBox>
-        <LinkOverlay as={Link} to={`/warehouses/${_id}`}>
+        <LinkOverlay as={Link} to={`/warehouses/bouzid`}>
           <Flex justifyContent="center" pt="2" pb="2">
             <Text fontSize="32" fontWeight="bold">
               {name}
             </Text>
+            
           </Flex>
         </LinkOverlay>
         <Flex justifyContent="space-between" pl="8" pr="8">
           <Grid justifyItems="flex-start">
-            <Text fontWeight="bold"> Location </Text>
+            <Text fontWeight="bold"> City </Text>
             <Text>{city} </Text>
           </Grid>
           <Grid justifyItems="flex-start">
-            <Text fontWeight="bold"> Phone </Text>
-            <Text> {adress}</Text>
+            <Text fontWeight="bold"> Adress </Text>
+            <Text> {address}</Text>
           </Grid>
         </Flex>
         <Grid justifyItems="flex-start" pl="8">
-          <Text fontWeight="bold"> Email </Text>
-          <Text>{'Email'}</Text>
+          <Text fontWeight="bold"> Distance </Text>
+          <Text>{distance}</Text>
         </Grid>
         <Box pt="2" pb="2">
           <Divider />
@@ -63,7 +66,7 @@ function WarehouseCard(props: WarehouseCardProps) {
 
         <Flex justifyContent="space-between" pb="2">
           <Box pl="8">
-            <Text>{'Distance'} </Text>
+            <Text>{distance} </Text>
           </Box>
 
           <Flex pr="8">

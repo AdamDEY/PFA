@@ -109,8 +109,7 @@ function HomePage() {
         <Stack p={0}>
           <Wrap spacing={1}>
             {distributors.map((distributor, index) => (
-              <WarehouseCard key={index} _id={distributor.distributor._id} name={distributor.distributor.name} city={distributor.distributor.city} adress={distributor.distributor.adress}                
-              />
+              <WarehouseCard key={index} _id={distributor.distributor._id} name={distributor.distributor.name} city={distributor.distributor.city} address={distributor.distributor.address} distance={distributor.distance.distance} duration={distributor.distance.duration}              />
             ))}
           </Wrap>
         </Stack>

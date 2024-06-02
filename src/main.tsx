@@ -16,6 +16,7 @@ import CartPage from "./pages/cart page/CartPage";
 
 
 
+
 const router = createBrowserRouter([
   {
     path: "/login",
@@ -38,13 +39,14 @@ const router = createBrowserRouter([
     element: <WarehousesPage />,
   },
   {
-    path: "/warehouses/:warehouseId",
+    path: "/warehouses/:warehouseName",
     element: <MedicineWarehousePage />,
   },
   {
     path: "/cart",
     element: <CartPage />,
   },
+
 ]);
 
 const queryClient = new QueryClient();
