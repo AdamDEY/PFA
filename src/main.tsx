@@ -5,7 +5,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { CartProvider } from "./context/CartContext";
+import { CartProvider } from "./pharmacy/context/CartContext";
 
 import App from "./App";
 

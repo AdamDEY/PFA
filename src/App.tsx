@@ -1,14 +1,14 @@
 // Import necessary modules
 import { RouterProvider, createBrowserRouter, Navigate } from 'react-router-dom';
 import { ReactNode } from 'react';
-import { useUserStore } from './stores/user';
-import CartPage from './pages/cart page/CartPage';
-import HomePage from './pages/home page/HomePage';
-import LoginPage from './pages/login page/LoginPage';
-import MedicinesPage from './pages/medicine page/MedicinesPage';
-import MedicineWarehousePage from './pages/medicinewarehouse page/MedicineWarehousePage';
-import OrdersPage from './pages/orders page/OrdersPage';
-import WarehousesPage from './pages/warehouses page/WarehousesPage';
+import { useUserStore } from './pharmacy/stores/user';
+import CartPage from './pharmacy/pages/cart page/CartPage';
+import HomePage from './pharmacy/pages/home page/HomePage';
+import LoginPage from './pharmacy/pages/login page/LoginPage';
+import MedicinesPage from './pharmacy/pages/medicine page/MedicinesPage';
+import MedicineWarehousePage from './pharmacy/pages/medicinewarehouse page/MedicineWarehousePage';
+import OrdersPage from './pharmacy/pages/orders page/OrdersPage';
+import WarehousesPage from './pharmacy/pages/warehouses page/WarehousesPage';
 
 // Define the router
 const router = createBrowserRouter([
