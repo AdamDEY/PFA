@@ -5,40 +5,30 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Map from "../../components/google maps/Maps";
 
-
-
-
-
 export interface FetchProps {
   distance: DistanceProps;
-  distributor:WarehouseCardProps;
+  distributor: WarehouseCardProps;
 }
-
 
 // HomePage component
 function HomePage() {
-  // State hooks with type annotations
   const [distributors, setDistributors] = useState<FetchProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // Function to get the token from local storage
   const getToken = (): string | null => {
     return localStorage.getItem('token');
   };
-  
-  // Function to save array to local storage
+
   const saveToLocalStorage = (key: string, value: any) => {
     localStorage.setItem(key, JSON.stringify(value));
   };
 
-  // Function to get array from local storage
   const getFromLocalStorage = (key: string): any[] => {
     const savedData = localStorage.getItem(key);
     return savedData ? JSON.parse(savedData) : [];
   };
 
-  // Fetch distributors when the component mounts
   useEffect(() => {
     const fetchDistributors = async () => {
       const token = getToken();
@@ -50,17 +40,13 @@ function HomePage() {
             'Authorization': `Bearer ${token}`
           }
         });
-        
-        // Check the structure of the response
+
         console.log('API response', response.data);
 
-        // Make sure you access the correct path to the data
         const distributorsData = response.data.data.result;
 
-        // Save to local storage
         saveToLocalStorage('distributors', distributorsData);
 
-        // Update state
         setDistributors(distributorsData);
         setLoading(false);
       } catch (error) {
@@ -70,7 +56,6 @@ function HomePage() {
       }
     };
 
-    // Check if data is already in local storage
     const storedDistributors = getFromLocalStorage('distributors');
     if (storedDistributors.length > 0) {
       setDistributors(storedDistributors);
@@ -88,7 +73,6 @@ function HomePage() {
     return <div>Error fetching data: {error.message}</div>;
   }
 
-  
   return (
     <Grid
       templateAreas={`
@@ -98,20 +82,18 @@ function HomePage() {
       h="100vh"
       w="98vw"
     >
-      {/* Sidebar */}
       <GridItem area={"nav"}>
         <SideBar children={undefined} />
       </GridItem>
 
-      {/* Main Content Area */}
       <GridItem area={"main"} ml="4">
         <Box h="80vh" w="90%" m="auto" mb="5">
-          <Map/>
+          {/* <Map distributors={distributors} /> */}
         </Box>
         <Stack p={0}>
           <Wrap spacing={1}>
             {distributors.map((distributor, index) => (
-              <WarehouseCard key={index} _id={distributor.distributor._id} name={distributor.distributor.name} city={distributor.distributor.city} address={distributor.distributor.address} distance={distributor.distance.distance} duration={distributor.distance.duration}              />
+              <WarehouseCard key={index} _id={distributor.distributor._id} name={distributor.distributor.name} city={distributor.distributor.city} address={distributor.distributor.address} distance={distributor.distance.distance} duration={distributor.distance.duration} />
             ))}
           </Wrap>
         </Stack>

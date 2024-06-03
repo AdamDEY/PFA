@@ -69,6 +69,7 @@ const Map: React.FC = () => {
         console.error('Error fetching pharmacy data:', error);
       }
     };
+    const fetchDistributorData = async () => {};
 
     fetchPharmacyData();
   }, []);
@@ -81,6 +82,7 @@ const Map: React.FC = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {pharmacy && <LocationMarker pharmacy={pharmacy} />}
+
       </MapContainer>
     </Box>
   );
