@@ -10,7 +10,7 @@ interface UserDist {
 }
 
 interface UserDistStore {
-  user: UserDist | null;
+  userDist: UserDist | null;
   login: (loginData: LoginData) => Promise<void>;
   signUp: (signUpData: SignUpData) => Promise<void>;
   logout: () => void;
@@ -28,7 +28,7 @@ interface SignUpData {
 }
 
 export const useUserDistStore = create<UserDistStore>((set) => ({
-  user: getUserFromLocalStorage(),
+  userDist: getUserFromLocalStorage(),
 
   login: async (loginData: LoginData) => {
     try {
@@ -42,14 +42,14 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
 
         const decodedToken: any = jwtDecode(accessToken);
 
-        const user: UserDist = {
+        const userDist: UserDist = {
           userName: decodedToken.username,
           userId: decodedToken.client_id,
         };
-        console.log('user',user )
+        console.log('user',userDist )
 
         localStorage.setItem("token", accessToken);
-        set({ user });
+        set({ userDist });
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -75,7 +75,7 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
   logout: () => {
     localStorage.removeItem("token");
     localStorage.removeItem("expiresIn");
-    set({ user: null });
+    set({ userDist: null });
   },
 }));
 

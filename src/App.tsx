@@ -10,6 +10,9 @@ import MedicineWarehousePage from './pharmacy/pages/medicinewarehouse page/Medic
 import OrdersPage from './pharmacy/pages/orders page/OrdersPage';
 import WarehousesPage from './pharmacy/pages/warehouses page/WarehousesPage';
 
+import StockPage from './distributor/pages/stockpage/StockPage';
+import Application from './distributor/application/Application';
+
 // Define the router
 const router = createBrowserRouter([
   {
@@ -50,7 +53,9 @@ function RequireAuth({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    // <RouterProvider router={router} />
+    // // <StockPage/>
+    <Application/>
   );
 }
 

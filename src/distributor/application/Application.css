@@ -1,0 +1,15 @@
+#root {
+    max-width: 1280px;
+    margin: 0 0;
+    padding: 0rem;
+    text-align: center;
+  }
+  .app-container {
+    height: 100vh;
+    margin: auto;
+    width: 98vw;
+    padding: 0;
+    /* Add any other styles you need */
+  }
+  
+  
