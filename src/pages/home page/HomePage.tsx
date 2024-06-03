@@ -8,11 +8,15 @@ import Map from "../../components/google maps/Maps";
 export interface FetchProps {
   distance: DistanceProps;
   distributor: WarehouseCardProps;
+  coordinates:number[];
+  
 }
+
 
 // HomePage component
 function HomePage() {
   const [distributors, setDistributors] = useState<FetchProps[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -43,7 +47,12 @@ function HomePage() {
 
         console.log('API response', response.data);
 
-        const distributorsData = response.data.data.result;
+        const distributorsData = response.data.data.result.map((item: any) => ({
+          distributor: item.distributor,
+          distance: item.distance,
+          coordinates: item.coordinates
+        }));
+
 
         saveToLocalStorage('distributors', distributorsData);
 
@@ -88,7 +97,7 @@ function HomePage() {
 
       <GridItem area={"main"} ml="4">
         <Box h="80vh" w="90%" m="auto" mb="5">
-          {/* <Map distributors={distributors} /> */}
+          <Map  />
         </Box>
         <Stack p={0}>
           <Wrap spacing={1}>

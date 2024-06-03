@@ -4,6 +4,8 @@ import "leaflet/dist/leaflet.css";
 import { useState, useEffect } from 'react';
 import { LatLng, LatLngExpression } from 'leaflet';
 import "./Maps.css";
+import axios from 'axios';
+import { FetchProps } from '../../pages/home page/HomePage';
 
 interface Pharmacy {
   _id: string;
@@ -18,8 +20,10 @@ const getToken = (): string | null => {
   return localStorage.getItem('token');
 };
 
+
 interface LocationMarkerProps {
   pharmacy: Pharmacy;
+ 
 }
 
 const LocationMarker: React.FC<LocationMarkerProps> = ({ pharmacy }) => {
@@ -47,29 +51,25 @@ const LocationMarker: React.FC<LocationMarkerProps> = ({ pharmacy }) => {
 
 const Map: React.FC = () => {
   const [pharmacy, setPharmacy] = useState<Pharmacy | null>(null);
+  
 
   useEffect(() => {
+    
     const fetchPharmacyData = async () => {
       const token = getToken();
 
       try {
-        const response = await fetch('http://localhost:3000/pharmacy', {
+        const response = await axios.get('http://localhost:3000/pharmacy', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        setPharmacy(data.data.result);
+        console.log('pharmacie',response.data.data.result)
+        setPharmacy(response.data.data.result.pharmacy);
       } catch (error) {
         console.error('Error fetching pharmacy data:', error);
       }
     };
-    const fetchDistributorData = async () => {};
 
     fetchPharmacyData();
   }, []);
@@ -81,11 +81,14 @@ const Map: React.FC = () => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {pharmacy && <LocationMarker pharmacy={pharmacy} />}
-
+        {pharmacy && <LocationMarker pharmacy={pharmacy}  />}
       </MapContainer>
     </Box>
   );
 };
 
 export default Map;
+function getFromLocalStorage(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+
