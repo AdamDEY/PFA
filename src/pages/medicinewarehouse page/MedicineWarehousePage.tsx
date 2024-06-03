@@ -13,7 +13,7 @@ function MedicineWarehousePage() {
       params: { distributorId }
     });
 
-    console.log('response', response.data); // Log the entire response
+    console.log('response brou', response.data); // Log the entire response
 
     // if (!response.data.result || !response.data.result.medicine_quantity) {
     //   throw new Error("Invalid response structure");
@@ -25,7 +25,8 @@ function MedicineWarehousePage() {
       const imagePath = medicine.medicine.imageUrl;
       const imageResponse = await axios.get(imagePath, {
         headers: {
-          mode: 'no-cors',
+          'Content-Type': 'application/json',
+          
         }
       });
       medicine.medicine['imageUrl'] = imageResponse.config.url;

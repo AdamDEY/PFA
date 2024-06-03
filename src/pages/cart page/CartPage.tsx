@@ -109,7 +109,7 @@ function CartPage() {
                   <Box key={item._id} p={4} borderWidth="1px" borderRadius="lg">
                     <Text fontWeight="bold">{item.name}</Text>
                     <Text>{item.description}</Text>
-                    <Text>Price: ${item.price}</Text>
+                    <Text>Price: {item.price} DT</Text>
                     <Text>Quantity: {item.quantity}</Text>
                     <Button
                       colorScheme="red"

@@ -69,6 +69,7 @@ function OrdersPage() {
       gridTemplateColumns={"250px 1fr"}
       h="100vh"
       w="100vw" // Full height of the viewport
+      overflowX="auto"
     >
       {/* Sidebar */}
       <GridItem area={"nav"}>
@@ -76,7 +77,7 @@ function OrdersPage() {
       </GridItem>
 
       {/* Main Content Area */}
-      <GridItem area={"main"}>
+      <GridItem area={"main"} >
         <Box w="100%">
           <Tabs p="5">
             <TabList>
@@ -111,7 +112,7 @@ function OrdersPage() {
                               <Td>{order._id}</Td>
                               <Td>{new Date(order.createdAt).toLocaleString()}</Td>
                               <Td>{order.distributor.name}</Td>
-                              <Td>{order.total_price} $</Td>
+                              <Td>{order.total_price} DT</Td>
                               <Td>{order.status}</Td>
                               <Td>
                                 <Button onClick={() => handleShowMore(order._id)}>
@@ -136,7 +137,7 @@ function OrdersPage() {
                                           item ? (
                                             <Tr key={index}>
                                               <Td>{item.medicine.name}</Td>
-                                              <Td>${item.medicineTotalPrice}</Td>
+                                              <Td>{item.medicineTotalPrice} DT</Td>
                                               <Td>{item.quantity}</Td>
                                             </Tr>
                                           ) : (

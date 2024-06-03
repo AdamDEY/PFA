@@ -3,6 +3,7 @@ import SideBar from "../../components/sidebar/SideBar";
 import WarehouseCard, { DistanceProps, WarehouseCardProps } from "../../components/WarehouseCard/WarehouseCard";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Map from "../../components/google maps/Maps";
 
 
 
@@ -87,6 +88,7 @@ function HomePage() {
     return <div>Error fetching data: {error.message}</div>;
   }
 
+  
   return (
     <Grid
       templateAreas={`
@@ -103,8 +105,8 @@ function HomePage() {
 
       {/* Main Content Area */}
       <GridItem area={"main"} ml="4">
-        <Box bg="gray" h="80vh" w="100vh" m="auto" mb="5">
-          MAPS
+        <Box h="80vh" w="90%" m="auto" mb="5">
+          <Map/>
         </Box>
         <Stack p={0}>
           <Wrap spacing={1}>
