@@ -12,7 +12,10 @@ export interface FetchProps {
   
 }
 
-
+export const getFromLocalStorage = (key: string): FetchProps[] => {
+  const savedData = localStorage.getItem(key);
+  return savedData ? JSON.parse(savedData) : [];
+};
 // HomePage component
 function HomePage() {
   const [distributors, setDistributors] = useState<FetchProps[]>([]);
@@ -28,10 +31,7 @@ function HomePage() {
     localStorage.setItem(key, JSON.stringify(value));
   };
 
-  const getFromLocalStorage = (key: string): any[] => {
-    const savedData = localStorage.getItem(key);
-    return savedData ? JSON.parse(savedData) : [];
-  };
+ 
 
   useEffect(() => {
     const fetchDistributors = async () => {
