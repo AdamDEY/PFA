@@ -53,9 +53,9 @@ function RequireAuth({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    // <RouterProvider router={router} />
     // // <StockPage/>
-    // <Application/>
+    <Application/>
   );
 }
 

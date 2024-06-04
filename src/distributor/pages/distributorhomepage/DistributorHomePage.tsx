@@ -4,7 +4,6 @@ import SidebarDist from '../../components/sidebardis/SidebarDist';
 import axios from 'axios';
 import DistributorMaps from '../../components/distributormaps/DistributorMaps';
 
-
 // Define TypeScript types
 export interface Distributor {
   _id: string;
@@ -116,13 +115,13 @@ const DistributorHomePage: React.FC = () => {
       h="100vh"
       w="98vw"
     >
-      {/* Sidebar */}
       <GridItem area="nav">
         <SidebarDist children={undefined} />
       </GridItem>
-      {/* Main Content */}
       <GridItem area="main" ml="4" p="4">
-      <DistributorMaps/>
+        {!loading && distributor && pharmacies.length > 0 && (
+          <DistributorMaps  />
+        )}
         <Box bg="white" p="6" rounded="md" shadow="md" mb="6">
           <Heading as="h2" size="lg">Distributor Information</Heading>
           {loading ? (

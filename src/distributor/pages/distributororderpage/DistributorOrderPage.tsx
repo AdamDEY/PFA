@@ -1,63 +1,85 @@
+import React, { useState } from "react";
 import {
-  Box, Grid, GridItem, Button, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Flex, Collapse, IconButton, Tabs, TabList, TabPanels, Tab, TabPanel, Badge
+  Box,
+  Grid,
+  GridItem,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Flex,
+  Collapse,
+  IconButton,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Badge,
+  Spinner,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import SidebarDist from "../../components/sidebardis/SidebarDist";
-import React from "react";
 
 interface Medicine {
+  _id: string;
   name: string;
+  description: string;
+  reference: string;
+  price: number;
+  imageUrl: string;
+  __v: number;
+}
+
+interface MedicineQuantity {
+  medicine: Medicine | null;
   quantity: number;
+  medicineTotalPrice: number;
+  _id: string;
 }
 
 interface Order {
-  id: string;
-  pharmacyName: string;
-  medicines: Medicine[];
-  status: 'Pending' | 'Accepted' | 'Rejected';
-  receivedAt: string; // ISO date string
+  _id: string;
+  pharmacy: string;
+  distributor: string;
+  medicine_quantity: MedicineQuantity[];
+  confirmation: boolean;
+  status: string;
+  total_price: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
-const initialOrders: Order[] = [
-  {
-    id: '1',
-    pharmacyName: 'Pharmacie La Marsa',
-    medicines: [
-      { name: 'Paracetamol', quantity: 100 },
-      { name: 'Ibuprofen', quantity: 50 },
-    ],
-    status: 'Pending',
-    receivedAt: '2024-06-01T10:00:00Z'
-  },
-  {
-    id: '2',
-    pharmacyName: 'Pharmacie Ben Saad Souad',
-    medicines: [
-      { name: 'Ibuprofen', quantity: 50 },
-    ],
-    status: 'Pending',
-    receivedAt: '2024-06-02T11:30:00Z'
-  },
-  {
-    id: '3',
-    pharmacyName: 'Pharmacie Driss Hamdane Raja',
-    medicines: [
-      { name: 'Amoxicillin', quantity: 200 },
-      { name: 'Paracetamol', quantity: 75 },
-    ],
-    status: 'Pending',
-    receivedAt: '2024-06-03T09:15:00Z'
-  }
-];
+const getToken = (): string | null => {
+  return localStorage.getItem("tokenDistributor");
+};
+
+const fetchOrders = async (): Promise<Order[]> => {
+  const token = getToken();
+  const response = await axios.get("http://localhost:3000/order/distributor", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data.data.result;
+};
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'Pending':
+    case 'NotConfirmed':
       return 'yellow';
-    case 'Accepted':
+    case 'InPreparing':
+      return 'blue';
+    case 'Confirmed':
       return 'green';
-    case 'Rejected':
+    case 'Canceled':
       return 'red';
     default:
       return 'gray';
@@ -65,20 +87,20 @@ const getStatusColor = (status: string) => {
 };
 
 const DistributorOrderPage: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
+  const { data: orders, isLoading, isError, error } = useQuery<Order[]>({
+    queryKey: ["orders"],
+    queryFn: fetchOrders,
+  });
+
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState(0);
 
   const handleAccept = (orderId: string) => {
-    setOrders(orders.map(order =>
-      order.id === orderId ? { ...order, status: 'Accepted' } : order
-    ));
+    // Implement accept functionality
   };
 
   const handleReject = (orderId: string) => {
-    setOrders(orders.map(order =>
-      order.id === orderId ? { ...order, status: 'Rejected' } : order
-    ));
+    // Implement reject functionality
   };
 
   const toggleExpand = (orderId: string) => {
@@ -86,6 +108,7 @@ const DistributorOrderPage: React.FC = () => {
   };
 
   const filterOrdersByStatus = (status: string) => {
+    if (!orders) return [];
     if (status === 'All') {
       return orders;
     }
@@ -94,8 +117,16 @@ const DistributorOrderPage: React.FC = () => {
 
   const sortedOrders = (status: string) => {
     const filteredOrders = filterOrdersByStatus(status);
-    return filteredOrders.sort((a, b) => new Date(a.receivedAt).getTime() - new Date(b.receivedAt).getTime());
+    return filteredOrders.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
   };
+
+  if (isLoading) {
+    return <Flex justify="center" align="center" height="100vh"><Spinner size="xl" /></Flex>;
+  }
+
+  if (isError) {
+    return <Box>Error: {error.message}</Box>;
+  }
 
   return (
     <Grid
@@ -116,22 +147,26 @@ const DistributorOrderPage: React.FC = () => {
           <Tabs onChange={(index) => setCurrentTab(index)}>
             <TabList>
               <Tab>All</Tab>
-              <Tab>Accepted</Tab>
-              <Tab>Rejected</Tab>
-              <Tab>Pending</Tab>
+              <Tab>NotConfirmed</Tab>
+              <Tab>InPreparing</Tab>
+              <Tab>Confirmed</Tab>
+              <Tab>Canceled</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
                 <OrderTable orders={sortedOrders('All')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
               </TabPanel>
               <TabPanel>
-                <OrderTable orders={sortedOrders('Accepted')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable orders={sortedOrders('NotConfirmed')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
               </TabPanel>
               <TabPanel>
-                <OrderTable orders={sortedOrders('Rejected')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable orders={sortedOrders('InPreparing')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
               </TabPanel>
               <TabPanel>
-                <OrderTable orders={sortedOrders('Pending')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable orders={sortedOrders('Confirmed')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+              </TabPanel>
+              <TabPanel>
+                <OrderTable orders={sortedOrders('Canceled')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -155,30 +190,34 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleEx
       <Table variant="simple">
         <Thead>
           <Tr>
-            <Th>Pharmacy Name</Th>
-            <Th>Received At</Th>
-            <Th>Details</Th>
+            <Th>Order ID</Th>
+            <Th>Pharmacy</Th>
+            <Th>Total Price</Th>
             <Th>Status</Th>
+            <Th>Created At</Th>
+            <Th>Details</Th>
             <Th>Actions</Th>
           </Tr>
         </Thead>
         <Tbody>
           {orders.map((order) => (
-            <React.Fragment key={order.id}>
+            <React.Fragment key={order._id}>
               <Tr>
-                <Td>{order.pharmacyName}</Td>
-                <Td>{new Date(order.receivedAt).toLocaleString()}</Td>
+                <Td>{order._id}</Td>
+                <Td>{order.pharmacy}</Td>
+                <Td>{order.total_price} DT</Td>
+                <Td>
+                  <Badge colorScheme={getStatusColor(order.status)}>{order.status}</Badge>
+                </Td>
+                <Td>{new Date(order.createdAt).toLocaleString()}</Td>
                 <Td>
                   <IconButton
                     aria-label="Expand order details"
-                    icon={expandedOrder === order.id ? <ChevronUpIcon /> : <ChevronDownIcon />}
-                    onClick={() => toggleExpand(order.id)}
+                    icon={expandedOrder === order._id ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                    onClick={() => toggleExpand(order._id)}
                     size="sm"
                     variant="ghost"
                   />
-                </Td>
-                <Td>
-                  <Badge colorScheme={getStatusColor(order.status)}>{order.status}</Badge>
                 </Td>
                 <Td>
                   <Flex>
@@ -186,16 +225,16 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleEx
                       colorScheme="green"
                       size="sm"
                       mr="2"
-                      onClick={() => handleAccept(order.id)}
-                      disabled={order.status !== 'Pending'}
+                      onClick={() => handleAccept(order._id)}
+                      disabled={order.status !== 'NotConfirmed'}
                     >
                       Accept
                     </Button>
                     <Button
                       colorScheme="red"
                       size="sm"
-                      onClick={() => handleReject(order.id)}
-                      disabled={order.status !== 'Pending'}
+                      onClick={() => handleReject(order._id)}
+                      disabled={order.status !== 'NotConfirmed'}
                     >
                       Reject
                     </Button>
@@ -203,21 +242,23 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleEx
                 </Td>
               </Tr>
               <Tr>
-                <Td colSpan={5} p={0}>
-                  <Collapse in={expandedOrder === order.id}>
+                <Td colSpan={7} p={0}>
+                  <Collapse in={expandedOrder === order._id}>
                     <Box p="4" bg="gray.50" rounded="md">
                       <Table size="sm" variant="simple">
                         <Thead>
                           <Tr>
                             <Th>Medicine Name</Th>
                             <Th>Quantity</Th>
+                            <Th>Total Price</Th>
                           </Tr>
                         </Thead>
                         <Tbody>
-                          {order.medicines.map((medicine, index) => (
+                          {order.medicine_quantity.map((medicine, index) => (
                             <Tr key={index}>
-                              <Td>{medicine.name}</Td>
+                              <Td>{medicine.medicine ? medicine.medicine.name : 'Unknown'}</Td>
                               <Td>{medicine.quantity}</Td>
+                              <Td>{medicine.medicineTotalPrice} DT</Td>
                             </Tr>
                           ))}
                         </Tbody>
