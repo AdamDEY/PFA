@@ -5,7 +5,7 @@ import axios from 'axios';
 import DistributorMaps from '../../components/distributormaps/DistributorMaps';
 
 // Define TypeScript types
-interface Distributor {
+export interface Distributor {
   _id: string;
   name: string;
   address: string;
@@ -16,7 +16,7 @@ interface Distributor {
   __v: number;
 }
 
-interface DistributorData {
+export interface DistributorData {
   distributor: Distributor;
   coordinates: number[];
 }
@@ -35,7 +35,7 @@ interface Distance {
   duration: string;
 }
 
-interface PharmacyData {
+export interface PharmacyData {
   pharmacy: Pharmacy;
   distance: Distance;
   coordinates: number[];

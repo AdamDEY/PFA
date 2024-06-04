@@ -71,7 +71,7 @@ const LocationDistributorMarker: React.FC<LocationDistributorProps> = ({ distrib
   );
 };
 
-const Map: React.FC = () => {
+const Map = () => {
   const [pharmacy, setPharmacy] = useState<Pharmacy | null>(null);
   const [distributors, setDistributors] = useState<FetchProps[]>([]);
 
