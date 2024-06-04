@@ -4,6 +4,7 @@ import SidebarDist from '../../components/sidebardis/SidebarDist';
 import axios from 'axios';
 import DistributorMaps from '../../components/distributormaps/DistributorMaps';
 
+
 // Define TypeScript types
 export interface Distributor {
   _id: string;
@@ -76,7 +77,7 @@ const DistributorHomePage: React.FC = () => {
           },
         });
         setDistributor(response.data.data.result);
-        localStorage.setItem('Distributor',JSON.stringify(response.data.data.result));
+        localStorage.setItem('Distributor', JSON.stringify(response.data.data.result));
       } catch (error) {
         console.error('Error fetching distributor data:', error);
       }
@@ -91,7 +92,7 @@ const DistributorHomePage: React.FC = () => {
           },
         });
         setPharmacies(response.data.data.result);
-        localStorage.setItem('Pharmacies',JSON.stringify(response.data.data.result));
+        localStorage.setItem('Pharmacies', JSON.stringify(response.data.data.result));
       } catch (error) {
         console.error('Error fetching pharmacy data:', error);
       }
@@ -121,23 +122,21 @@ const DistributorHomePage: React.FC = () => {
       </GridItem>
       {/* Main Content */}
       <GridItem area="main" ml="4" p="4">
-        <DistributorMaps/>
+      <DistributorMaps/>
         <Box bg="white" p="6" rounded="md" shadow="md" mb="6">
-        <Heading as="h2" size="lg">Distributor Information</Heading>
+          <Heading as="h2" size="lg">Distributor Information</Heading>
           {loading ? (
             <Flex justify="center" align="center" h="full">
               <Spinner size="xl" />
             </Flex>
           ) : (
             <VStack align="start" spacing="4">
-              
               <Text><strong>Name:</strong> {distributor?.distributor.name}</Text>
               <Text><strong>Address:</strong> {distributor?.distributor.address}</Text>
               <Text><strong>City:</strong> {distributor?.distributor.city}</Text>
               <Text><strong>Client ID:</strong> {distributor?.distributor.clientId}</Text>
               <Text><strong>Telephone:</strong> {distributor?.distributor.telephone}</Text>
               <Text><strong>Working Hours:</strong> {distributor?.distributor.horaire.join(' - ')}</Text>
-              
             </VStack>
           )}
         </Box>
@@ -149,7 +148,7 @@ const DistributorHomePage: React.FC = () => {
             </Flex>
           ) : (
             <VStack align="start" spacing="4">
-              {pharmacies.map((pharmacyData) => (
+              {Array.isArray(pharmacies) && pharmacies.map((pharmacyData) => (
                 <Box key={pharmacyData.pharmacy._id} w="full">
                   <HStack justify="space-between" w="full">
                     <VStack align="start" spacing="1">
@@ -158,7 +157,6 @@ const DistributorHomePage: React.FC = () => {
                       <Text><strong>City:</strong> {pharmacyData.pharmacy.city}</Text>
                       <Text><strong>Distance:</strong> {pharmacyData.distance.distance}</Text>
                       <Text><strong>Duration:</strong> {pharmacyData.distance.duration}</Text>
-                   
                     </VStack>
                   </HStack>
                   <Divider my="4" />

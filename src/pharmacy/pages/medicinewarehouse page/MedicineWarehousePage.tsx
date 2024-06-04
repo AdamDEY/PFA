@@ -5,15 +5,23 @@ import axios from "axios";
 import MedicineCard from "../../components/medicinecard/MedicineCard";
 import { useQuery } from "@tanstack/react-query";
 
+
+const getToken = (): string | null => {
+  return localStorage.getItem('token');
+};
 function MedicineWarehousePage() {
-  const { distributorId } = useParams(); // Extract distributorId from URL
+  const { distributor_id } = useParams(); // Extract distributorId from URL
 
   const fetchMedicines = async () => {
-    const response = await axios.get("http://localhost:3000/stock/distributor", {
-      params: { distributorId }
+    const token= getToken();
+    const response = await axios.get("http://localhost:3000/stock/pharmacy/distributor", {
+      params: { 'distributor_id':distributor_id },
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     });
 
-    console.log('response brou', response.data); // Log the entire response
+    console.log('response brou', response.data.data.result.medicine_quantity); // Log the entire response
 
     // if (!response.data.result || !response.data.result.medicine_quantity) {
     //   throw new Error("Invalid response structure");
@@ -37,7 +45,7 @@ function MedicineWarehousePage() {
   };
 
   const { isLoading, isError, data, error } = useQuery<any[]>({
-    queryKey: ["medicines", distributorId], // Add distributorId to query key for caching
+    queryKey: ["medicines", distributor_id], // Add distributorId to query key for caching
     queryFn: fetchMedicines,
   });
 

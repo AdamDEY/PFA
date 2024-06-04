@@ -36,7 +36,7 @@ const router = createBrowserRouter([
     element: <RequireAuth><WarehousesPage /></RequireAuth>,
   },
   {
-    path: "/warehouses/:distributorId",
+    path: "/warehouses/:distributor_id",
     element: <RequireAuth><MedicineWarehousePage /></RequireAuth>,
   },
   {
@@ -53,9 +53,9 @@ function RequireAuth({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    // <RouterProvider router={router} />
+    <RouterProvider router={router} />
     // // <StockPage/>
-    <Application/>
+    // <Application/>
   );
 }
 
