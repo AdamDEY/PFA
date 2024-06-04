@@ -32,11 +32,10 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: "Home", icon: FiHome, url: "/distributor" },
-  { name: "Medicines", icon: FiStar, url: "/medicines" },
-  { name: "Warehouses", icon: FaWarehouse, url: "/warehouses" },
+  { name: "Stock", icon: FiStar, url: "/distributor/stock" },
   { name: "Orders", icon: MdListAlt, url: "/distributor/orders" },
   { name: "Notifications", icon: MdNotifications, url: "/notifications" },
-  { name: "Cart", icon: FaCartArrowDown, url: "/cart" },
+  
 ];
 
 export default function SidebarDist({ children }: { children: ReactNode }) {

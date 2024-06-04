@@ -1,24 +1,25 @@
 import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom";
 import { ReactNode } from "react";
 import { useUserDistStore } from "../distristores/userDist";
-import LoginPage from "../pages/loginpage/LoginPage";
+import DistributorLoginPage from "../pages/distributorloginpage/DistributorLoginPage";
 import StockPage from "../pages/stockpage/StockPage";
+import DistributorHomePage from "../pages/distributorhomepage/DistributorHomePage";
 
 
 
 const distriRouter = createBrowserRouter([
     {
       path: "/distributor/login",
-      element: <LoginPage />,
+      element: <DistributorLoginPage />,
     },
     {
       path: "/distributor/stock",
       element: <RequireAuth><StockPage /></RequireAuth>,
     },
-    // {
-    //   path: "/medicines",
-    //   element: <RequireAuth><MedicinesPage /></RequireAuth>,
-    // },
+    {
+      path: "/distributor/home",
+      element: <RequireAuth><DistributorHomePage /></RequireAuth>,
+    },
     // {
     //   path: "/orders",
     //   element: <RequireAuth><OrdersPage /></RequireAuth>,
@@ -43,8 +44,8 @@ function RequireAuth({ children }: { children: ReactNode }) {
   
   function Application() {
     return (
-      // <RouterProvider router={distriRouter} />
-     <StockPage/>
+      <RouterProvider router={distriRouter} />
+    //  <StockPage/>
     );
   }
   

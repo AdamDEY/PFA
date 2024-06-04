@@ -38,7 +38,7 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
       if (response.status === 201) {
         // console.log("response.data", response.data.data.result.response.accessToken  );
         const  accessToken  = response.data.data.result.response.accessToken ;
-        console.log("token", accessToken);
+        console.log("tokenDistributor", accessToken);
 
         const decodedToken: any = jwtDecode(accessToken);
 
@@ -48,7 +48,7 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
         };
         console.log('user',userDist )
 
-        localStorage.setItem("token", accessToken);
+        localStorage.setItem("tokenDistributor", accessToken);
         set({ userDist });
       }
     } catch (error) {
@@ -73,14 +73,14 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
   },
 
   logout: () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("tokenDistributor");
     localStorage.removeItem("expiresIn");
     set({ userDist: null });
   },
 }));
 
 function getUserFromLocalStorage(): UserDist | null {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("tokenDistributor");
   if (token) {
     const decodedToken: any = jwtDecode(token);
     return {

@@ -26,7 +26,7 @@ import { useUserDistStore } from "../../distristores/userDist";
     password: z.string().min(6),
   });
   
-  export default function LoginPage() {
+  export default function DistributorLoginPage() {
     const { register, handleSubmit, formState: { errors } } = useForm<z.infer<typeof loginSchema>>({
       resolver: zodResolver(loginSchema),
       defaultValues: {
@@ -72,7 +72,7 @@ import { useUserDistStore } from "../../distristores/userDist";
         minW={"100vw"} // Ensure it takes up the entire viewport width
         align={"center"}
         justify={"center"}
-        bg={useColorModeValue("green.50", "green.800")}
+        bg={useColorModeValue("red.50", "red.800")}
       >
         <Stack spacing={8} mx={"auto"} maxW={"lg"} py={10} px={20}>
           <Box
