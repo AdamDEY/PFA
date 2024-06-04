@@ -31,7 +31,7 @@ interface LinkItemProps {
   url: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome, url: "/distributor" },
+  { name: "Home", icon: FiHome, url: "/distributor/home" },
   { name: "Stock", icon: FiStar, url: "/distributor/stock" },
   { name: "Orders", icon: MdListAlt, url: "/distributor/orders" },
   { name: "Notifications", icon: MdNotifications, url: "/notifications" },
@@ -40,17 +40,17 @@ const LinkItems: Array<LinkItemProps> = [
 
 export default function SidebarDist({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  // const { logout } = useUserDistStore();
-  // const navigate = useNavigate();
+  const { logout } = useUserDistStore();
+  const navigate = useNavigate();
 
-  // const handleLogout = () => {
-  //   logout();
-  //   navigate("/distributor/login");
-  // };
+  const handleLogout = () => {
+    logout();
+    navigate("/distributor/login");
+  };
 
   return (
     <Box minH="100vh" bg={useColorModeValue("white.100", "white.900")} w="250px">
-      <SidebarContent onClose={onClose} handleLogout={()=>{}} display={{ base: "none", md: "block" }} />
+      <SidebarContent onClose={onClose} handleLogout={handleLogout} display={{ base: "none", md: "block" }} />
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
@@ -61,7 +61,7 @@ export default function SidebarDist({ children }: { children: ReactNode }) {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} handleLogout={()=>{}} />
+          <SidebarContent onClose={onClose} handleLogout={handleLogout} />
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}

@@ -1,12 +1,22 @@
-import { Box, Grid, GridItem, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, Input, useDisclosure, Table, Thead, Tbody, Tr, Th, Td, TableContainer } from "@chakra-ui/react";
+import { 
+  Box, Grid, GridItem, Button, Modal, ModalOverlay, ModalContent, ModalHeader, 
+  ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, Input, 
+  useDisclosure, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Spinner, Flex 
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import SidebarDist from "../../components/sidebardis/SidebarDist";
 
+interface MedicineQuantity {
+  medicine: string;
+  quantity: number;
+  _id: string;
+}
 
 interface StockItem {
-  name: string;
-  quantity: number;
+  _id: string;
+  medicine_quantity: MedicineQuantity[];
+  __v: number;
 }
 
 const getToken = (): string | null => {
@@ -14,19 +24,20 @@ const getToken = (): string | null => {
 };
 
 const StockPage: React.FC = () => {
-  const [stock, setStock] = useState<StockItem[]>([]);
+  const [stock, setStock] = useState<MedicineQuantity[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [newMedicine, setNewMedicine] = useState<StockItem>({
-    name: "",
+  const [newMedicine, setNewMedicine] = useState<MedicineQuantity>({
+    medicine: "",
     quantity: 0,
+    _id: "",
   });
 
   useEffect(() => {
     const fetchStock = async () => {
       const token = getToken();
-      const url = 'http://localhost:3000/stock/distributor';
+      const url = 'http://localhost:3000/stock';
 
       try {
         const response = await axios.get(url, {
@@ -34,12 +45,11 @@ const StockPage: React.FC = () => {
             'Authorization': `Bearer ${token}`
           }
         });
-        console.log("responsedistr",response.data.data);
-
-        setStock(response.data.data);
+        const stockData = response.data.data.result[0].medicine_quantity;
+        setStock(stockData);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching stock kkouna:', error);
+        console.error('Error fetching stock:', error);
         setError(error as Error);
         setLoading(false);
       }
@@ -47,19 +57,28 @@ const StockPage: React.FC = () => {
 
     fetchStock();
   }, []);
-
   const handleAddOrUpdateMedicine = async () => {
     const token = getToken();
     const url = 'http://localhost:3000/stock/add';
-
+  
     try {
-      const response = await axios.post(url, newMedicine, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const response = await axios.post(url, 
+        { 
+          medicine_quantity: [
+            {
+              medicine: newMedicine.medicine,
+              quantity: newMedicine.quantity
+            }
+          ]
+        }, 
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
         }
-      });
-
-      const updatedStock = response.data.data;
+      );
+  
+      const updatedStock = response.data.data.result[0].medicine_quantity;
       setStock(updatedStock);
       onClose();
     } catch (error) {
@@ -68,11 +87,19 @@ const StockPage: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Flex justify="center" align="center" h="100vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
   }
 
   if (error) {
-    return <div>Error fetching data: {error.message}</div>;
+    return (
+      <Flex justify="center" align="center" h="100vh">
+        <Box>Error fetching data: {error.message}</Box>
+      </Flex>
+    );
   }
 
   return (
@@ -96,14 +123,14 @@ const StockPage: React.FC = () => {
             <Table variant="simple">
               <Thead>
                 <Tr>
-                  <Th>Name</Th>
+                  <Th>Medicine ID</Th>
                   <Th>Quantity</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {stock.map((item) => (
-                  <Tr >
-                    <Td>{item.name}</Td>
+                  <Tr key={item._id}>
+                    <Td>{item.medicine}</Td>
                     <Td>{item.quantity}</Td>
                   </Tr>
                 ))}
@@ -118,10 +145,10 @@ const StockPage: React.FC = () => {
               <ModalCloseButton />
               <ModalBody>
                 <FormControl mb="4">
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Medicine ID</FormLabel>
                   <Input
-                    value={newMedicine.name}
-                    onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })}
+                    value={newMedicine.medicine}
+                    onChange={(e) => setNewMedicine({ ...newMedicine, medicine: e.target.value })}
                   />
                 </FormControl>
                 <FormControl mb="4">
@@ -147,4 +174,4 @@ const StockPage: React.FC = () => {
   );
 };
 
-export default StockPage;   
+export default StockPage;

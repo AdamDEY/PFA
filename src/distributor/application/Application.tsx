@@ -4,6 +4,7 @@ import { useUserDistStore } from "../distristores/userDist";
 import DistributorLoginPage from "../pages/distributorloginpage/DistributorLoginPage";
 import StockPage from "../pages/stockpage/StockPage";
 import DistributorHomePage from "../pages/distributorhomepage/DistributorHomePage";
+import DistributorOrderPage from "../pages/distributororderpage/DistributorOrderPage";
 
 
 
@@ -20,10 +21,10 @@ const distriRouter = createBrowserRouter([
       path: "/distributor/home",
       element: <RequireAuth><DistributorHomePage /></RequireAuth>,
     },
-    // {
-    //   path: "/orders",
-    //   element: <RequireAuth><OrdersPage /></RequireAuth>,
-    // },
+    {
+      path: "/distributor/orders",
+      element: <RequireAuth><DistributorOrderPage /></RequireAuth>,
+    },
     // {
     //   path: "/warehouses",
     //   element: <RequireAuth><WarehousesPage /></RequireAuth>,

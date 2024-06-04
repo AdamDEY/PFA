@@ -51,7 +51,7 @@ import { useUserDistStore } from "../../distristores/userDist";
           status: "success",
           duration: 3000,
         });
-        navigate('/distributor/stock'); // Redirect to home page
+        navigate('/distributor/home'); // Redirect to home page
       } catch (error: any) {
         console.error("Error logging in: ", error);
   
