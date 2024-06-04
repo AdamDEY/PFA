@@ -20,13 +20,13 @@ export interface WarehouseCardProps{
   address: string;
   distance:string;
   duration:string;
-  distributor_id: string
+  clientId: string
   // status:string;
 
 }
 
 function WarehouseCard(props: WarehouseCardProps) {
-  const { _id, name, city, address,distance,duration,distributor_id} =
+  const { _id, name, city, address,distance,duration,clientId} =
     props;
 
   return (
@@ -42,7 +42,7 @@ function WarehouseCard(props: WarehouseCardProps) {
       pr={8}
     >
       <LinkBox>
-        <LinkOverlay as={Link} to={`/warehouses/${distributor_id}`}>
+        <LinkOverlay as={Link} to={`/warehouses/${clientId}`}>
           <Flex justifyContent="center" pt="2" pb="2">
             <Text fontSize="32" fontWeight="bold">
               {name}

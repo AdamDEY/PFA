@@ -99,7 +99,7 @@ function WarehousesPage() {
         <Flex>
           <Wrap spacing={4}>
             {distributors.map((distributor, index) => (
-              <WarehouseCard key={index} _id={distributor.distributor._id} name={distributor.distributor.name} city={distributor.distributor.city} address={distributor.distributor.address} distance={distributor.distance.distance} duration={distributor.distance.duration} distributor_id={distributor.distributor.distributor_id}              />
+              <WarehouseCard key={index} _id={distributor.distributor._id} name={distributor.distributor.name} city={distributor.distributor.city} address={distributor.distributor.address} distance={distributor.distance.distance} duration={distributor.distance.duration} clientId={distributor.distributor.clientId}              />
             ))}
           </Wrap>
         </Flex>

@@ -22,12 +22,42 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import SideBar from "../../components/sidebar/SideBar";
 
+interface Medicine {
+  _id: string;
+  name: string;
+  description: string;
+  reference: string;
+  price: number;
+  imageUrl: string;
+  __v: number;
+}
+
+interface MedicineQuantity {
+  medicine: Medicine | null;
+  quantity: number;
+  medicineTotalPrice: number;
+  _id: string;
+}
+
+interface Order {
+  _id: string;
+  pharmacy: string;
+  distributor:  string  | null;
+  medicine_quantity: MedicineQuantity[];
+  confirmation: boolean;
+  status: string;
+  total_price: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 // Fetch orders from the API
 const getToken = (): string | null => {
   return localStorage.getItem("token");
 };
 
-const fetchOrders = async () => {
+const fetchOrders = async (): Promise<Order[]> => {
   const token = getToken();
   const response = await axios.get("http://localhost:3000/order/pharmacy", {
     headers: {
@@ -35,11 +65,11 @@ const fetchOrders = async () => {
     },
   });
   console.log("response", response.data.data.result);
-  return response.data.data.result; // Adjust this if the API response structure is different
+  return response.data.data.result;
 };
 
 function OrdersPage() {
-  const { data, isLoading, isError, error } = useQuery<any[]>({
+  const { data, isLoading, isError, error } = useQuery<Order[]>({
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
@@ -77,7 +107,7 @@ function OrdersPage() {
       </GridItem>
 
       {/* Main Content Area */}
-      <GridItem area={"main"} >
+      <GridItem area={"main"}>
         <Box w="100%">
           <Tabs p="5">
             <TabList>
@@ -91,8 +121,7 @@ function OrdersPage() {
               <TabPanel>
                 <Box>
                   <TableContainer>
-                    <Table variant="striped" >
-                      
+                    <Table variant="striped">
                       <Thead>
                         <Tr>
                           <Th>Order ID</Th>
@@ -103,15 +132,14 @@ function OrdersPage() {
                           <Th>Show more</Th>
                         </Tr>
                       </Thead>
-                      
+
                       <Tbody>
-                        {data?.map((order: any) => (
-                         
-                          <React.Fragment key={order._id} >
+                        {data?.map((order: Order) => (
+                          <React.Fragment key={order._id}>
                             <Tr>
                               <Td>{order._id}</Td>
                               <Td>{new Date(order.createdAt).toLocaleString()}</Td>
-                              <Td>{order.distributor.name}</Td>
+                              <Td>{order.distributor ? order.distributor: "Unknown"}</Td>
                               <Td>{order.total_price} DT</Td>
                               <Td>{order.status}</Td>
                               <Td>
@@ -133,18 +161,12 @@ function OrdersPage() {
                                         </Tr>
                                       </Thead>
                                       <Tbody>
-                                        {order.medicine_quantity.map((item: any, index: number) => (
-                                          item ? (
-                                            <Tr key={index}>
-                                              <Td>{item.medicine.name}</Td>
-                                              <Td>{item.medicineTotalPrice} DT</Td>
-                                              <Td>{item.quantity}</Td>
-                                            </Tr>
-                                          ) : (
-                                            <Tr key={index}>
-                                              <Td colSpan={3}>Invalid item data</Td>
-                                            </Tr>
-                                          )
+                                        {order.medicine_quantity.map((item, index) => (
+                                          <Tr key={index}>
+                                            <Td>{item.medicine ? item.medicine.name : "Unknown"}</Td>
+                                            <Td>{item.medicineTotalPrice} DT</Td>
+                                            <Td>{item.quantity}</Td>
+                                          </Tr>
                                         ))}
                                       </Tbody>
                                     </Table>
@@ -153,7 +175,6 @@ function OrdersPage() {
                               </Td>
                             </Tr>
                           </React.Fragment>
-                      
                         ))}
                       </Tbody>
                     </Table>
@@ -161,13 +182,13 @@ function OrdersPage() {
                 </Box>
               </TabPanel>
               <TabPanel>
-                <p>two!</p>
+                <p>Pending orders!</p>
               </TabPanel>
               <TabPanel>
-                <p>three!</p>
+                <p>Processing orders!</p>
               </TabPanel>
               <TabPanel>
-                <p>four!</p>
+                <p>Done orders!</p>
               </TabPanel>
             </TabPanels>
           </Tabs>
