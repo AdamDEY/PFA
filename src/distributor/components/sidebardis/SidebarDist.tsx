@@ -16,9 +16,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { FiHome, FiStar, FiMenu } from "react-icons/fi";
-import { FaWarehouse } from "react-icons/fa6";
 import { MdListAlt, MdNotifications } from "react-icons/md";
-import { FaCartArrowDown } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { useNavigate } from "react-router-dom";
 import { useUserDistStore } from "../../distristores/userDist";
