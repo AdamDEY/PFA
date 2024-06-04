@@ -137,7 +137,7 @@ const DistributorHomePage: React.FC = () => {
               <Text><strong>Client ID:</strong> {distributor?.distributor.clientId}</Text>
               <Text><strong>Telephone:</strong> {distributor?.distributor.telephone}</Text>
               <Text><strong>Working Hours:</strong> {distributor?.distributor.horaire.join(' - ')}</Text>
-              <Text><strong>Coordinates:</strong> {distributor?.coordinates.join(', ')}</Text>
+              
             </VStack>
           )}
         </Box>
@@ -158,7 +158,7 @@ const DistributorHomePage: React.FC = () => {
                       <Text><strong>City:</strong> {pharmacyData.pharmacy.city}</Text>
                       <Text><strong>Distance:</strong> {pharmacyData.distance.distance}</Text>
                       <Text><strong>Duration:</strong> {pharmacyData.distance.duration}</Text>
-                      <Text><strong>Coordinates:</strong> {pharmacyData.coordinates.join(', ')}</Text>
+                   
                     </VStack>
                   </HStack>
                   <Divider my="4" />

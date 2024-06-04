@@ -1,14 +1,24 @@
 import { 
   Box, Grid, GridItem, Button, Modal, ModalOverlay, ModalContent, ModalHeader, 
   ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, Input, 
-  useDisclosure, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Spinner, Flex 
+  Select, useDisclosure, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Spinner, Flex 
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import SidebarDist from "../../components/sidebardis/SidebarDist";
 
+interface Medicine {
+  _id: string;
+  name: string;
+  price: number;
+  description: string;
+  reference: string;
+  imageUrl: string;
+  __v: number;
+}
+
 interface MedicineQuantity {
-  medicine: string;
+  medicine: Medicine;
   quantity: number;
   _id: string;
 }
@@ -28,61 +38,56 @@ const StockPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [newMedicine, setNewMedicine] = useState<MedicineQuantity>({
-    medicine: "",
-    quantity: 0,
-    _id: "",
-  });
+  const [selectedMedicineId, setSelectedMedicineId] = useState<string>("");
+  const [quantityToUpdate, setQuantityToUpdate] = useState<number>(0);
+
+  const fetchStock = async () => {
+    const token = getToken();
+    const url = 'http://localhost:3000/stock/distributor';
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const stockData = response.data.data.result.medicine_quantity;
+      setStock(stockData || []); // Ensure stockData is an array
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching stock:', error);
+      setError(error as Error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchStock = async () => {
-      const token = getToken();
-      const url = 'http://localhost:3000/stock';
-
-      try {
-        const response = await axios.get(url, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        const stockData = response.data.data.result[0].medicine_quantity;
-        setStock(stockData);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching stock:', error);
-        setError(error as Error);
-        setLoading(false);
-      }
-    };
-
     fetchStock();
   }, []);
-  const handleAddOrUpdateMedicine = async () => {
+
+  const handleUpdateQuantity = async () => {
     const token = getToken();
-    const url = 'http://localhost:3000/stock/add';
-  
+    const url = 'http://localhost:3000/stock/addmedicine';
+
     try {
-      const response = await axios.post(url, 
-        { 
-          medicine_quantity: 
-            {
-              medicine: newMedicine.medicine,
-              quantity: newMedicine.quantity
-            }
-          
-        }, 
+      await axios.put(
+        url,
+        {
+          medicine: selectedMedicineId,
+          quantity: quantityToUpdate
+        },
         {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         }
       );
-  
-      const updatedStock = response.data.data.result[0].medicine_quantity;
-      setStock(updatedStock);
+
+      // Re-fetch stock data after update
+      fetchStock();
       onClose();
     } catch (error) {
-      console.error('Error adding/updating medicine:', error);
+      console.error('Error updating medicine quantity:', error);
     }
   };
 
@@ -118,19 +123,23 @@ const StockPage: React.FC = () => {
       {/* Main Content */}
       <GridItem area={"main"} ml="4">
         <Box p="4">
-          <Button onClick={onOpen} colorScheme="teal" mb="4">Add Medicine</Button>
+          <Button onClick={onOpen} colorScheme="teal" mb="4">Update Medicine</Button>
           <TableContainer>
             <Table variant="simple">
               <Thead>
                 <Tr>
+                  <Th>Medicine Name</Th>
                   <Th>Medicine ID</Th>
+                  <Th>Price</Th>
                   <Th>Quantity</Th>
                 </Tr>
               </Thead>
               <Tbody>
-                {stock.map((item) => (
+                {Array.isArray(stock) && stock.map((item) => (
                   <Tr key={item._id}>
-                    <Td>{item.medicine}</Td>
+                    <Td>{item.medicine?.name}</Td>
+                    <Td>{item.medicine?._id}</Td>
+                    <Td>{item.medicine?.price?.toFixed(2)} DT</Td>
                     <Td>{item.quantity}</Td>
                   </Tr>
                 ))}
@@ -141,27 +150,34 @@ const StockPage: React.FC = () => {
           <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Add or Update Medicine</ModalHeader>
+              <ModalHeader>Update Medicine Quantity</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <FormControl mb="4">
-                  <FormLabel>Medicine ID</FormLabel>
-                  <Input
-                    value={newMedicine.medicine}
-                    onChange={(e) => setNewMedicine({ ...newMedicine, medicine: e.target.value })}
-                  />
+                  <FormLabel>Medicine Name</FormLabel>
+                  <Select
+                    placeholder="Select Medicine"
+                    value={selectedMedicineId}
+                    onChange={(e) => setSelectedMedicineId(e.target.value)}
+                  >
+                    {Array.isArray(stock) && stock.map((item) => (
+                      <option key={item.medicine?._id} value={item.medicine?._id}>
+                        {item.medicine?.name}
+                      </option>
+                    ))}
+                  </Select>
                 </FormControl>
                 <FormControl mb="4">
                   <FormLabel>Quantity</FormLabel>
                   <Input
                     type="number"
-                    value={newMedicine.quantity}
-                    onChange={(e) => setNewMedicine({ ...newMedicine, quantity: parseInt(e.target.value) })}
+                    value={quantityToUpdate}
+                    onChange={(e) => setQuantityToUpdate(parseInt(e.target.value))}
                   />
                 </FormControl>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleAddOrUpdateMedicine}>
+                <Button colorScheme="blue" mr={3} onClick={handleUpdateQuantity}>
                   Save
                 </Button>
                 <Button variant="ghost" onClick={onClose}>Cancel</Button>
