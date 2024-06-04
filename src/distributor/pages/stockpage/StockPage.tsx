@@ -64,12 +64,12 @@ const StockPage: React.FC = () => {
     try {
       const response = await axios.post(url, 
         { 
-          medicine_quantity: [
+          medicine_quantity: 
             {
               medicine: newMedicine.medicine,
               quantity: newMedicine.quantity
             }
-          ]
+          
         }, 
         {
           headers: {
