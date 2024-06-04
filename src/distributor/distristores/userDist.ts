@@ -74,6 +74,8 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
 
   logout: () => {
     localStorage.removeItem("tokenDistributor");
+    localStorage.removeItem("Distributor");
+    localStorage.removeItem("Pharmacies");
     localStorage.removeItem("expiresIn");
     set({ userDist: null });
   },
