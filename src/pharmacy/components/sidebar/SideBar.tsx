@@ -14,6 +14,7 @@ import {
   BoxProps,
   FlexProps,
   Button,
+  Image
 } from "@chakra-ui/react";
 import { FiHome, FiStar, FiMenu } from "react-icons/fi";
 import { FaWarehouse } from "react-icons/fa6";
@@ -22,6 +23,7 @@ import { FaCartArrowDown } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../../stores/user";
+import logoo from "../../assets/logoo.png"
 
 interface LinkItemProps {
   name: string;
@@ -89,9 +91,9 @@ const SidebarContent = ({ onClose, handleLogout, ...rest }: SidebarProps) => {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
-        </Text>
+        <Box>
+          <Image src={logoo} alt='Logo' boxSize="50px" objectFit="contain" />
+        </Box>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
@@ -176,9 +178,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         icon={<FiMenu />}
       />
 
-      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
-        Logo
-      </Text>
+      <Image src={logoo} alt='Logo' boxSize="50px" objectFit="contain" ml="8" />
     </Flex>
   );
 };

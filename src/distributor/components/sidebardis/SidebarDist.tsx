@@ -14,12 +14,14 @@ import {
   BoxProps,
   FlexProps,
   Button,
+  Image
 } from "@chakra-ui/react";
 import { FiHome, FiStar, FiMenu } from "react-icons/fi";
 import { MdListAlt, MdNotifications } from "react-icons/md";
 import { IconType } from "react-icons";
 import { useNavigate } from "react-router-dom";
 import { useUserDistStore } from "../../distristores/userDist";
+import logoo from "../../../pharmacy/assets/logoo.png";
 
 
 
@@ -88,9 +90,9 @@ const SidebarContent = ({ onClose, handleLogout, ...rest }: SidebarProps) => {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
-        </Text>
+      <Box>
+          <Image src={logoo} alt='Logo' boxSize="50px" objectFit="contain" />
+        </Box>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
