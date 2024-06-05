@@ -12,6 +12,7 @@ import WarehousesPage from './pharmacy/pages/warehouses page/WarehousesPage';
 
 import StockPage from './distributor/pages/stockpage/StockPage';
 import Application from './distributor/application/Application';
+import NotificationPage from './pharmacy/pages/notificationpage/NotificationPage';
 
 // Define the router
 const router = createBrowserRouter([
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
     path: "/cart",
     element: <RequireAuth><CartPage /></RequireAuth>,
   },
+  {
+    path: "/notifications",
+    element: <RequireAuth><NotificationPage /></RequireAuth>,
+  },
 ]);
 
 // RequireAuth component for protecting routes
@@ -53,9 +58,9 @@ function RequireAuth({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    // <RouterProvider router={router} />
+    <RouterProvider router={router} />
     // // <StockPage/>
-    <Application/>
+    // <Application/>
   );
 }
 

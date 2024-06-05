@@ -6,11 +6,22 @@ import {
   Grid,
   GridItem,
   Flex,
-  useToast
+  useToast,
+  Divider,
+  Heading,
+  VStack,
+  HStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { useCart } from "../../context/CartContext";
 import axios from "axios";
 import SideBar from "../../components/sidebar/SideBar";
+import { FaTrashAlt } from "react-icons/fa";
+
+const getID = () => {
+  const ID = localStorage.getItem("DistributorID");
+  if (ID) return ID;
+};
 
 function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -30,10 +41,11 @@ function CartPage() {
       });
       return;
     }
-
-    const distributorId = "6625a720f00b7e0916efaf00"; // Replace with the actual distributor ID
+    const distributor_id = getID();
+    console.log('distri id', distributor_id);
+    // Replace with the actual distributor ID
     const orderData = {
-      distributor: distributorId,
+      distributor: "57cnr6lrin4vbmd0ghj53q2mfk",
       medicine_quantity: cart.map(item => ({
         medicine: item._id, // Ensure to use _id if that is required by the server
         quantity: item.quantity,
@@ -75,14 +87,19 @@ function CartPage() {
     }
   };
 
+  const bgColor = useColorModeValue("white", "gray.700");
+  const cardColor = useColorModeValue("gray.50", "gray.800");
+
+  const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+
   return (
     <Grid
       templateAreas={`
-    "nav main"
-    `}
+        "nav main"
+      `}
       gridTemplateColumns={"250px 1fr"}
       h="100vh"
-      w="100vw" // Full height of the viewport
+      w="100vw"
       overflowX="auto"
     >
       {/* Sidebar */}
@@ -91,35 +108,49 @@ function CartPage() {
       </GridItem>
       {/* Main Content Area */}
       <GridItem area={"main"}>
-        <Box w="100%" h="100%" mt="8">
-          <Box p={4}>
-            <Flex justifyContent="space-between" alignItems="center">
-              <Text fontSize="2xl" mb={4}>
-                Shopping Cart
-              </Text>
-              <Button colorScheme="teal" onClick={confirmOrder}>
+        <Box w="100%" h="100%" mt="8" p={6}>
+          <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="lg">
+            <Flex justifyContent="space-between" alignItems="center" mb={4}>
+              <Heading as="h2" size="lg">Shopping Cart</Heading>
+              <Button colorScheme="teal" size="lg" onClick={confirmOrder}>
                 Confirm Order
               </Button>
             </Flex>
+            <Divider mb={4} />
             {cart.length === 0 ? (
-              <Text>Your cart is empty.</Text>
+              <Text fontSize="xl">Your cart is empty.</Text>
             ) : (
-              <Stack spacing={4}>
-                {cart.map((item) => (
-                  <Box key={item._id} p={4} borderWidth="1px" borderRadius="lg">
-                    <Text fontWeight="bold">{item.name}</Text>
-                    <Text>{item.description}</Text>
-                    <Text>Price: {item.price} DT</Text>
-                    <Text>Quantity: {item.quantity}</Text>
-                    <Button
-                      colorScheme="red"
-                      onClick={() => removeFromCart(item._id)}
-                    >
-                      Remove
-                    </Button>
-                  </Box>
-                ))}
-              </Stack>
+              <>
+                <Stack spacing={4}>
+                  {cart.map((item) => (
+                    <Box key={item._id} p={4} borderWidth="1px" borderRadius="lg" bg={cardColor}>
+                      <Flex justifyContent="space-between" alignItems="center">
+                        <VStack align="start">
+                          <Text fontWeight="bold" fontSize="lg">{item.name}</Text>
+                          <Text>{item.description}</Text>
+                          <HStack>
+                            <Text>Price: {item.price} DT</Text>
+                            <Text>Quantity: {item.quantity}</Text>
+                          </HStack>
+                        </VStack>
+                        <Button
+                          leftIcon={<FaTrashAlt />}
+                          colorScheme="red"
+                          variant="outline"
+                          onClick={() => removeFromCart(item._id)}
+                        >
+                          Remove
+                        </Button>
+                      </Flex>
+                    </Box>
+                  ))}
+                </Stack>
+                <Divider my={4} />
+                <Flex justifyContent="space-between" alignItems="center">
+                  <Text fontSize="2xl" fontWeight="bold">Total Price:</Text>
+                  <Text fontSize="2xl" fontWeight="bold">{totalPrice.toFixed(2)} DT</Text>
+                </Flex>
+              </>
             )}
           </Box>
         </Box>

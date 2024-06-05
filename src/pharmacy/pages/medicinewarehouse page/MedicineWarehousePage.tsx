@@ -10,7 +10,8 @@ const getToken = (): string | null => {
   return localStorage.getItem('token');
 };
 function MedicineWarehousePage() {
-  const { distributor_id } = useParams(); // Extract distributorId from URL
+  const { distributor_id } = useParams(); 
+  localStorage.setItem('DistributorID',JSON.stringify(distributor_id) )// Extract distributorId from URL
 
   const fetchMedicines = async () => {
     const token= getToken();

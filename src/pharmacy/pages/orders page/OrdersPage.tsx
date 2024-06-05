@@ -22,6 +22,17 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import SideBar from "../../components/sidebar/SideBar";
 
+interface Distributor {
+  _id: string;
+  name: string;
+  address: string;
+  city: string;
+  clientId: string;
+  telephone: string;
+  horaire: string[];
+  __v: number;
+}
+
 interface Medicine {
   _id: string;
   name: string;
@@ -42,7 +53,7 @@ interface MedicineQuantity {
 interface Order {
   _id: string;
   pharmacy: string;
-  distributor:  string  | null;
+  distributor: Distributor | null;
   medicine_quantity: MedicineQuantity[];
   confirmation: boolean;
   status: string;
@@ -139,7 +150,7 @@ function OrdersPage() {
                             <Tr>
                               <Td>{order._id}</Td>
                               <Td>{new Date(order.createdAt).toLocaleString()}</Td>
-                              <Td>{order.distributor ? order.distributor: "Unknown"}</Td>
+                              <Td>{order.distributor ? order.distributor.name : "Unknown"}</Td>
                               <Td>{order.total_price} DT</Td>
                               <Td>{order.status}</Td>
                               <Td>

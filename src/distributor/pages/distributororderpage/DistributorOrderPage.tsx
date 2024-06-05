@@ -27,6 +27,15 @@ import axios from "axios";
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import SidebarDist from "../../components/sidebardis/SidebarDist";
 
+interface Pharmacy {
+  _id: string;
+  name: string;
+  address: string;
+  city: string;
+  clientId: string;
+  __v: number;
+}
+
 interface Medicine {
   _id: string;
   name: string;
@@ -46,7 +55,7 @@ interface MedicineQuantity {
 
 interface Order {
   _id: string;
-  pharmacy: string;
+  pharmacy: Pharmacy;
   distributor: string;
   medicine_quantity: MedicineQuantity[];
   confirmation: boolean;
@@ -204,7 +213,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleEx
             <React.Fragment key={order._id}>
               <Tr>
                 <Td>{order._id}</Td>
-                <Td>{order.pharmacy}</Td>
+                <Td>{order.pharmacy.name}</Td>
                 <Td>{order.total_price} DT</Td>
                 <Td>
                   <Badge colorScheme={getStatusColor(order.status)}>{order.status}</Badge>

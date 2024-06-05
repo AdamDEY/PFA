@@ -5,6 +5,7 @@ import DistributorLoginPage from "../pages/distributorloginpage/DistributorLogin
 import StockPage from "../pages/stockpage/StockPage";
 import DistributorHomePage from "../pages/distributorhomepage/DistributorHomePage";
 import DistributorOrderPage from "../pages/distributororderpage/DistributorOrderPage";
+import NotificationDistributorPage from "../pages/distributornotificationpage/NotificationDistributorPage";
 
 
 
@@ -24,6 +25,10 @@ const distriRouter = createBrowserRouter([
     {
       path: "/distributor/orders",
       element: <RequireAuth><DistributorOrderPage /></RequireAuth>,
+    },
+    {
+      path: "/distributor/notifications",
+      element: <RequireAuth><NotificationDistributorPage /></RequireAuth>,
     },
     // {
     //   path: "/warehouses",

@@ -32,7 +32,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Home", icon: FiHome, url: "/distributor/home" },
   { name: "Stock", icon: FiStar, url: "/distributor/stock" },
   { name: "Orders", icon: MdListAlt, url: "/distributor/orders" },
-  { name: "Notifications", icon: MdNotifications, url: "/notifications" },
+  { name: "Notifications", icon: MdNotifications, url: "/distributor/notifications" },
   
 ];
 
