@@ -42,26 +42,30 @@ function CartPage() {
       return;
     }
     const distributor_id = getID();
-    console.log('distri id', distributor_id);
+    console.log("distri id", distributor_id);
     // Replace with the actual distributor ID
     const orderData = {
-      distributor: "57cnr6lrin4vbmd0ghj53q2mfk",
-      medicine_quantity: cart.map(item => ({
+      distributor: "6661cd49b55b5fc3c38cbb45",
+      medicine_quantity: cart.map((item) => ({
         medicine: item._id, // Ensure to use _id if that is required by the server
         quantity: item.quantity,
         price: item.price,
       })),
     };
-
+    console.log(orderData);
     const token = getToken();
 
     try {
-      const response = await axios.post("http://localhost:3000/order/makeorder", orderData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Replace with your actual access token
+      const response = await axios.post(
+        "http://172.201.204.133:3000/order/makeorder",
+        orderData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Replace with your actual access token
+          },
         }
-      });
+      );
 
       toast({
         title: "Order Confirmed",
@@ -74,7 +78,6 @@ function CartPage() {
 
       // Clear the cart and local storage
       clearCart();
-
     } catch (error) {
       toast({
         title: "Order Failed",
@@ -90,7 +93,10 @@ function CartPage() {
   const bgColor = useColorModeValue("white", "gray.700");
   const cardColor = useColorModeValue("gray.50", "gray.800");
 
-  const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalPrice = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
   return (
     <Grid
@@ -111,7 +117,9 @@ function CartPage() {
         <Box w="100%" h="100%" mt="8" p={6}>
           <Box p={4} bg={bgColor} borderRadius="lg" boxShadow="lg">
             <Flex justifyContent="space-between" alignItems="center" mb={4}>
-              <Heading as="h2" size="lg">Shopping Cart</Heading>
+              <Heading as="h2" size="lg">
+                Shopping Cart
+              </Heading>
               <Button colorScheme="teal" size="lg" onClick={confirmOrder}>
                 Confirm Order
               </Button>
@@ -123,10 +131,18 @@ function CartPage() {
               <>
                 <Stack spacing={4}>
                   {cart.map((item) => (
-                    <Box key={item._id} p={4} borderWidth="1px" borderRadius="lg" bg={cardColor}>
+                    <Box
+                      key={item._id}
+                      p={4}
+                      borderWidth="1px"
+                      borderRadius="lg"
+                      bg={cardColor}
+                    >
                       <Flex justifyContent="space-between" alignItems="center">
                         <VStack align="start">
-                          <Text fontWeight="bold" fontSize="lg">{item.name}</Text>
+                          <Text fontWeight="bold" fontSize="lg">
+                            {item.name}
+                          </Text>
                           <Text>{item.description}</Text>
                           <HStack>
                             <Text>Price: {item.price} DT</Text>
@@ -147,8 +163,12 @@ function CartPage() {
                 </Stack>
                 <Divider my={4} />
                 <Flex justifyContent="space-between" alignItems="center">
-                  <Text fontSize="2xl" fontWeight="bold">Total Price:</Text>
-                  <Text fontSize="2xl" fontWeight="bold">{totalPrice.toFixed(2)} DT</Text>
+                  <Text fontSize="2xl" fontWeight="bold">
+                    Total Price:
+                  </Text>
+                  <Text fontSize="2xl" fontWeight="bold">
+                    {totalPrice.toFixed(2)} DT
+                  </Text>
                 </Flex>
               </>
             )}

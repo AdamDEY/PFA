@@ -70,11 +70,14 @@ const getToken = (): string | null => {
 
 const fetchOrders = async (): Promise<Order[]> => {
   const token = getToken();
-  const response = await axios.get("http://localhost:3000/order/pharmacy", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.get(
+    "http://172.201.204.133:3000/order/pharmacy",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   console.log("response", response.data.data.result);
   return response.data.data.result;
 };
@@ -85,7 +88,9 @@ function OrdersPage() {
     queryFn: fetchOrders,
   });
 
-  const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>({});
+  const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   const handleShowMore = (orderId: string) => {
     setExpandedRows((prev) => ({
@@ -149,12 +154,20 @@ function OrdersPage() {
                           <React.Fragment key={order._id}>
                             <Tr>
                               <Td>{order._id}</Td>
-                              <Td>{new Date(order.createdAt).toLocaleString()}</Td>
-                              <Td>{order.distributor ? order.distributor.name : "Unknown"}</Td>
+                              <Td>
+                                {new Date(order.createdAt).toLocaleString()}
+                              </Td>
+                              <Td>
+                                {order.distributor
+                                  ? order.distributor.name
+                                  : "Unknown"}
+                              </Td>
                               <Td>{order.total_price} DT</Td>
                               <Td>{order.status}</Td>
                               <Td>
-                                <Button onClick={() => handleShowMore(order._id)}>
+                                <Button
+                                  onClick={() => handleShowMore(order._id)}
+                                >
                                   {expandedRows[order._id] ? "▼" : "▶"}
                                 </Button>
                               </Td>
@@ -162,7 +175,11 @@ function OrdersPage() {
                             <Tr>
                               <Td colSpan={6} p={0} m={0}>
                                 <Collapse in={expandedRows[order._id]}>
-                                  <Box p={4} borderWidth="1px" borderRadius="lg">
+                                  <Box
+                                    p={4}
+                                    borderWidth="1px"
+                                    borderRadius="lg"
+                                  >
                                     <Table variant="simple">
                                       <Thead>
                                         <Tr>
@@ -172,13 +189,21 @@ function OrdersPage() {
                                         </Tr>
                                       </Thead>
                                       <Tbody>
-                                        {order.medicine_quantity.map((item, index) => (
-                                          <Tr key={index}>
-                                            <Td>{item.medicine ? item.medicine.name : "Unknown"}</Td>
-                                            <Td>{item.medicineTotalPrice} DT</Td>
-                                            <Td>{item.quantity}</Td>
-                                          </Tr>
-                                        ))}
+                                        {order.medicine_quantity.map(
+                                          (item, index) => (
+                                            <Tr key={index}>
+                                              <Td>
+                                                {item.medicine
+                                                  ? item.medicine.name
+                                                  : "Unknown"}
+                                              </Td>
+                                              <Td>
+                                                {item.medicineTotalPrice} DT
+                                              </Td>
+                                              <Td>{item.quantity}</Td>
+                                            </Tr>
+                                          )
+                                        )}
                                       </Tbody>
                                     </Table>
                                   </Box>

@@ -28,10 +28,12 @@ interface MedicineProps {
   price: number;
   __v: number;
   imageUrl: any;
+  footer: boolean;
 }
 
 function MedicineCard(props: MedicineProps) {
-  const { _id, name, description, reference, price, __v, imageUrl } = props;
+  const { _id, name, description, reference, price, __v, imageUrl, footer } =
+    props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(0);
@@ -72,12 +74,20 @@ function MedicineCard(props: MedicineProps) {
       mb="4"
     >
       <CardBody>
-        <Box display="flex" alignItems="center" justifyContent="center" h="150px" mb={4}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          h="150px"
+          mb={4}
+        >
           <img src={imageUrl} alt={name} width="150" />
         </Box>
 
         <Stack spacing="1">
-          <Button onClick={onOpen} bg={'white'}>{name}</Button>
+          <Button onClick={onOpen} bg={"white"}>
+            {name}
+          </Button>
           {isOpen && (
             <>
               <MedicineModal {...props} isOpen={isOpen} onClose={onClose} />
@@ -86,31 +96,41 @@ function MedicineCard(props: MedicineProps) {
 
           <Text>{description}</Text>
           <Text color="green.600" fontSize="2xl">
-            {price}
+            {price} Dinars Tunisien
           </Text>
         </Stack>
       </CardBody>
       <Divider />
-      <CardFooter>
-        <ButtonGroup spacing="2">
-          <Button variant="solid" colorScheme="green" onClick={handleAddToCart}>
-            Add to cart
-          </Button>
-          <NumberInput
-            size="md"
-            maxW={24}
-            min={0}
-            value={quantity}
-            onChange={(valueString) => setQuantity(parseInt(valueString) || 0)}
-          >
-            <NumberInputField />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-        </ButtonGroup>
-      </CardFooter>
+      {footer ? (
+        <CardFooter>
+          <ButtonGroup spacing="2">
+            <Button
+              variant="solid"
+              colorScheme="green"
+              onClick={handleAddToCart}
+            >
+              Add to cart
+            </Button>
+            <NumberInput
+              size="md"
+              maxW={24}
+              min={0}
+              value={quantity}
+              onChange={(valueString) =>
+                setQuantity(parseInt(valueString) || 0)
+              }
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </ButtonGroup>
+        </CardFooter>
+      ) : (
+        <></>
+      )}
     </Card>
   );
 }

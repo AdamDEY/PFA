@@ -14,16 +14,14 @@ import {
   BoxProps,
   FlexProps,
   Button,
-  Image
+  Image,
 } from "@chakra-ui/react";
 import { FiHome, FiStar, FiMenu } from "react-icons/fi";
 import { MdListAlt, MdNotifications } from "react-icons/md";
 import { IconType } from "react-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useUserDistStore } from "../../distristores/userDist";
-import logoo from "../../../pharmacy/assets/logoo.png";
-
-
+import pharmadistLogo from "../../../pharmacy/assets/pharmadistLogo.jpg";
 
 interface LinkItemProps {
   name: string;
@@ -34,14 +32,18 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Home", icon: FiHome, url: "/distributor/home" },
   { name: "Stock", icon: FiStar, url: "/distributor/stock" },
   { name: "Orders", icon: MdListAlt, url: "/distributor/orders" },
-  { name: "Notifications", icon: MdNotifications, url: "/distributor/notifications" },
-  
+  {
+    name: "Notifications",
+    icon: MdNotifications,
+    url: "/distributor/notifications",
+  },
 ];
 
 export default function SidebarDist({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { logout } = useUserDistStore();
   const navigate = useNavigate();
+  const location = useLocation(); // Get the current location
 
   const handleLogout = () => {
     logout();
@@ -49,8 +51,17 @@ export default function SidebarDist({ children }: { children: ReactNode }) {
   };
 
   return (
-    <Box minH="100vh" bg={useColorModeValue("white.100", "white.900")} w="250px">
-      <SidebarContent onClose={onClose} handleLogout={handleLogout} display={{ base: "none", md: "block" }} />
+    <Box
+      minH="100vh"
+      bg={useColorModeValue("white.100", "white.900")}
+      w="250px"
+    >
+      <SidebarContent
+        onClose={onClose}
+        handleLogout={handleLogout}
+        location={location} // Pass location to SidebarContent
+        display={{ base: "none", md: "block" }}
+      />
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
@@ -61,7 +72,11 @@ export default function SidebarDist({ children }: { children: ReactNode }) {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} handleLogout={handleLogout} />
+          <SidebarContent
+            onClose={onClose}
+            handleLogout={handleLogout}
+            location={location}
+          />
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}
@@ -76,9 +91,15 @@ export default function SidebarDist({ children }: { children: ReactNode }) {
 interface SidebarProps extends BoxProps {
   onClose: () => void;
   handleLogout: () => void;
+  location: any; // Add location to SidebarProps
 }
 
-const SidebarContent = ({ onClose, handleLogout, ...rest }: SidebarProps) => {
+const SidebarContent = ({
+  onClose,
+  handleLogout,
+  location,
+  ...rest
+}: SidebarProps) => {
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -90,23 +111,33 @@ const SidebarContent = ({ onClose, handleLogout, ...rest }: SidebarProps) => {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-      <Box>
-          <Image src={logoo} alt='Logo' boxSize="50px" objectFit="contain" />
+        <Box>
+          <Image
+            src={pharmadistLogo}
+            alt="Logo"
+            boxSize="200px"
+            objectFit="contain"
+          />
         </Box>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon} to={link.url}>
+        <NavItem
+          key={link.name}
+          icon={link.icon}
+          to={link.url}
+          isActive={location.pathname === link.url} // Check if the link is active
+        >
           {link.name}
         </NavItem>
       ))}
-      <NavItem icon={null} to="#" onClick={handleLogout} _hover={{ bg: "white" }}>
-        <Button
-          bg="red.400"
-          color="white"
-          _hover={{ bg: "red.500" }}
-          w="100%"
-        >
+      <NavItem
+        icon={null}
+        to="#"
+        onClick={handleLogout}
+        _hover={{ bg: "white" }}
+      >
+        <Button bg="red.400" color="white" _hover={{ bg: "red.500" }} w="100%">
           Logout
         </Button>
       </NavItem>
@@ -114,49 +145,36 @@ const SidebarContent = ({ onClose, handleLogout, ...rest }: SidebarProps) => {
   );
 };
 
-interface NavItemProps extends FlexProps {
+interface NavItemProps {
   icon: IconType | null;
   to: string;
+  children: ReactNode;
+  isActive?: boolean;
 }
-const NavItem = ({ icon, children, to, ...rest }: NavItemProps) => {
+
+const NavItem = ({ icon, to, children, isActive, ...rest }: NavItemProps) => {
   return (
-    <Link
+    <Box
+      as="a"
       href={to}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
+      display="flex"
+      alignItems="center"
+      p="4"
+      bg={isActive ? "green.400" : "transparent"} // Change background if active
+      color={isActive ? "white" : "inherit"}
+      _hover={{ bg: "green.400", color: "white" }}
+      {...rest}
     >
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: "green.400",
-          color: "white",
-        }}
-        {...rest}
-      >
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize="16"
-            _groupHover={{
-              color: "white",
-            }}
-            as={icon}
-          />
-        )}
-        {children}
-      </Flex>
-    </Link>
+      {icon && <Box mr="4" as={icon} />}
+      {children}
+    </Box>
   );
 };
 
 interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
+
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   return (
     <Flex

@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import SidebarDist from "../../components/sidebardis/SidebarDist";
 
 interface Pharmacy {
@@ -72,31 +72,83 @@ const getToken = (): string | null => {
 
 const fetchOrders = async (): Promise<Order[]> => {
   const token = getToken();
-  const response = await axios.get("http://localhost:3000/order/distributor", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await axios.get(
+    "http://172.201.204.133:3000/order/distributor",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
   return response.data.data.result;
+};
+
+const acceptOrder = async (orderId: string, confirmation: boolean) => {
+  const token = getToken();
+  try {
+    const response = await axios.put(
+      "http://172.201.204.133:3000/order/confirmation",
+      {}, // Empty object for the request body
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          orderId: orderId,
+          confirmation: confirmation,
+        },
+      }
+    );
+    // Handle response if needed
+    console.log(response.data.data.result);
+    // Refresh the page
+    window.location.reload();
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle error if needed
+  }
+};
+
+const deliveryOrder = async (orderId: string) => {
+  const token = getToken();
+  const response = await axios.put(
+    "http://172.201.204.133:3000/order/delivery",
+    {}, // Empty object for the request body
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        orderId: orderId,
+      },
+    }
+  );
 };
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'NotConfirmed':
-      return 'yellow';
-    case 'InPreparing':
-      return 'blue';
-    case 'Confirmed':
-      return 'green';
-    case 'Canceled':
-      return 'red';
+    case "NotConfirmed":
+      return "yellow";
+    case "InPreparing":
+      return "blue";
+    case "Confirmed":
+      return "green";
+    case "Refused":
+      return "red";
+    case "Delivery":
+      return "orange";
     default:
-      return 'gray';
+      return "gray";
   }
 };
 
 const DistributorOrderPage: React.FC = () => {
-  const { data: orders, isLoading, isError, error } = useQuery<Order[]>({
+  const {
+    data: orders,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<Order[]>({
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
@@ -118,19 +170,26 @@ const DistributorOrderPage: React.FC = () => {
 
   const filterOrdersByStatus = (status: string) => {
     if (!orders) return [];
-    if (status === 'All') {
+    if (status === "All") {
       return orders;
     }
-    return orders.filter(order => order.status === status);
+    return orders.filter((order) => order.status === status);
   };
 
   const sortedOrders = (status: string) => {
     const filteredOrders = filterOrdersByStatus(status);
-    return filteredOrders.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    return filteredOrders.sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
   };
 
   if (isLoading) {
-    return <Flex justify="center" align="center" height="100vh"><Spinner size="xl" /></Flex>;
+    return (
+      <Flex justify="center" align="center" height="100vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
   }
 
   if (isError) {
@@ -158,24 +217,64 @@ const DistributorOrderPage: React.FC = () => {
               <Tab>All</Tab>
               <Tab>NotConfirmed</Tab>
               <Tab>InPreparing</Tab>
+              <Tab>Delivery</Tab>
               <Tab>Confirmed</Tab>
-              <Tab>Canceled</Tab>
+              <Tab>Refused</Tab>
             </TabList>
             <TabPanels>
               <TabPanel>
-                <OrderTable orders={sortedOrders('All')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable
+                  orders={sortedOrders("All")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                  handleAccept={handleAccept}
+                  handleReject={handleReject}
+                />
               </TabPanel>
               <TabPanel>
-                <OrderTable orders={sortedOrders('NotConfirmed')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable
+                  orders={sortedOrders("NotConfirmed")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                  handleAccept={handleAccept}
+                  handleReject={handleReject}
+                />
               </TabPanel>
               <TabPanel>
-                <OrderTable orders={sortedOrders('InPreparing')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable
+                  orders={sortedOrders("InPreparing")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                  handleAccept={handleAccept}
+                  handleReject={handleReject}
+                />
               </TabPanel>
               <TabPanel>
-                <OrderTable orders={sortedOrders('Confirmed')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable
+                  orders={sortedOrders("Delivery")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                  handleAccept={handleAccept}
+                  handleReject={handleReject}
+                />
               </TabPanel>
               <TabPanel>
-                <OrderTable orders={sortedOrders('Canceled')} expandedOrder={expandedOrder} toggleExpand={toggleExpand} handleAccept={handleAccept} handleReject={handleReject} />
+                <OrderTable
+                  orders={sortedOrders("Confirmed")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                  handleAccept={handleAccept}
+                  handleReject={handleReject}
+                />
+              </TabPanel>
+              <TabPanel>
+                <OrderTable
+                  orders={sortedOrders("Refused")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                  handleAccept={handleAccept}
+                  handleReject={handleReject}
+                />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -193,7 +292,13 @@ interface OrderTableProps {
   handleReject: (orderId: string) => void;
 }
 
-const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleExpand, handleAccept, handleReject }) => {
+const OrderTable: React.FC<OrderTableProps> = ({
+  orders,
+  expandedOrder,
+  toggleExpand,
+  handleAccept,
+  handleReject,
+}) => {
   return (
     <TableContainer>
       <Table variant="simple">
@@ -216,13 +321,21 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleEx
                 <Td>{order.pharmacy.name}</Td>
                 <Td>{order.total_price} DT</Td>
                 <Td>
-                  <Badge colorScheme={getStatusColor(order.status)}>{order.status}</Badge>
+                  <Badge colorScheme={getStatusColor(order.status)}>
+                    {order.status}
+                  </Badge>
                 </Td>
                 <Td>{new Date(order.createdAt).toLocaleString()}</Td>
                 <Td>
                   <IconButton
                     aria-label="Expand order details"
-                    icon={expandedOrder === order._id ? <ChevronUpIcon /> : <ChevronDownIcon />}
+                    icon={
+                      expandedOrder === order._id ? (
+                        <ChevronUpIcon />
+                      ) : (
+                        <ChevronDownIcon />
+                      )
+                    }
                     onClick={() => toggleExpand(order._id)}
                     size="sm"
                     variant="ghost"
@@ -230,23 +343,51 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleEx
                 </Td>
                 <Td>
                   <Flex>
-                    <Button
-                      colorScheme="green"
-                      size="sm"
-                      mr="2"
-                      onClick={() => handleAccept(order._id)}
-                      disabled={order.status !== 'NotConfirmed'}
-                    >
-                      Accept
-                    </Button>
-                    <Button
-                      colorScheme="red"
-                      size="sm"
-                      onClick={() => handleReject(order._id)}
-                      disabled={order.status !== 'NotConfirmed'}
-                    >
-                      Reject
-                    </Button>
+                    {order.status === "NotConfirmed" && (
+                      <>
+                        <Button
+                          colorScheme="green"
+                          size="sm"
+                          mr="2"
+                          onClick={async () =>
+                            await acceptOrder(order._id, true)
+                          }
+                          disabled={order.status !== "NotConfirmed"}
+                        >
+                          Accept
+                        </Button>
+                        <Button
+                          colorScheme="red"
+                          size="sm"
+                          onClick={async () =>
+                            await acceptOrder(order._id, false)
+                          }
+                          disabled={order.status !== "NotConfirmed"}
+                        >
+                          Reject
+                        </Button>
+                      </>
+                    )}
+
+                    {order.status === "InPreparing" && (
+                      <Button
+                        colorScheme="orange"
+                        size="sm"
+                        onClick={async () => await deliveryOrder(order._id)}
+                      >
+                        Deliver
+                      </Button>
+                    )}
+
+                    {order.status === "Delivery" && (
+                      <Button
+                        colorScheme="blue"
+                        size="sm"
+                        onClick={async () => await deliveryOrder(order._id)}
+                      >
+                        Done
+                      </Button>
+                    )}
                   </Flex>
                 </Td>
               </Tr>
@@ -265,7 +406,11 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders, expandedOrder, toggleEx
                         <Tbody>
                           {order.medicine_quantity.map((medicine, index) => (
                             <Tr key={index}>
-                              <Td>{medicine.medicine ? medicine.medicine.name : 'Unknown'}</Td>
+                              <Td>
+                                {medicine.medicine
+                                  ? medicine.medicine.name
+                                  : "Unknown"}
+                              </Td>
                               <Td>{medicine.quantity}</Td>
                               <Td>{medicine.medicineTotalPrice} DT</Td>
                             </Tr>

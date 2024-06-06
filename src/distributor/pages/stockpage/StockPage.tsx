@@ -1,7 +1,29 @@
-import { 
-  Box, Grid, GridItem, Button, Modal, ModalOverlay, ModalContent, ModalHeader, 
-  ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, Input, 
-  Select, useDisclosure, Table, Thead, Tbody, Tr, Th, Td, TableContainer, Spinner, Flex 
+import {
+  Box,
+  Grid,
+  GridItem,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+  useDisclosure,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Spinner,
+  Flex,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -30,7 +52,7 @@ interface StockItem {
 }
 
 const getToken = (): string | null => {
-  return localStorage.getItem('tokenDistributor');
+  return localStorage.getItem("tokenDistributor");
 };
 
 const StockPage: React.FC = () => {
@@ -43,19 +65,19 @@ const StockPage: React.FC = () => {
 
   const fetchStock = async () => {
     const token = getToken();
-    const url = 'http://localhost:3000/stock/distributor';
+    const url = "http://172.201.204.133:3000/stock/distributor";
 
     try {
       const response = await axios.get(url, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       const stockData = response.data.data.result.medicine_quantity;
       setStock(stockData || []); // Ensure stockData is an array
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching stock:', error);
+      console.error("Error fetching stock:", error);
       setError(error as Error);
       setLoading(false);
     }
@@ -67,19 +89,19 @@ const StockPage: React.FC = () => {
 
   const handleUpdateQuantity = async () => {
     const token = getToken();
-    const url = 'http://localhost:3000/stock/addmedicine';
+    const url = "http://172.201.204.133:3000/stock/addmedicine";
 
     try {
       await axios.put(
         url,
         {
           medicine: selectedMedicineId,
-          quantity: quantityToUpdate
+          quantity: quantityToUpdate,
         },
         {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -87,7 +109,7 @@ const StockPage: React.FC = () => {
       fetchStock();
       onClose();
     } catch (error) {
-      console.error('Error updating medicine quantity:', error);
+      console.error("Error updating medicine quantity:", error);
     }
   };
 
@@ -123,7 +145,9 @@ const StockPage: React.FC = () => {
       {/* Main Content */}
       <GridItem area={"main"} ml="4">
         <Box p="4">
-          <Button onClick={onOpen} colorScheme="teal" mb="4">Update Medicine</Button>
+          <Button onClick={onOpen} colorScheme="teal" mb="4">
+            Update Medicine
+          </Button>
           <TableContainer>
             <Table variant="simple">
               <Thead>
@@ -135,14 +159,15 @@ const StockPage: React.FC = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {Array.isArray(stock) && stock.map((item) => (
-                  <Tr key={item._id}>
-                    <Td>{item.medicine?.name}</Td>
-                    <Td>{item.medicine?._id}</Td>
-                    <Td>{item.medicine?.price?.toFixed(2)} DT</Td>
-                    <Td>{item.quantity}</Td>
-                  </Tr>
-                ))}
+                {Array.isArray(stock) &&
+                  stock.map((item) => (
+                    <Tr key={item._id}>
+                      <Td>{item.medicine?.name}</Td>
+                      <Td>{item.medicine?._id}</Td>
+                      <Td>{item.medicine?.price?.toFixed(2)} DT</Td>
+                      <Td>{item.quantity}</Td>
+                    </Tr>
+                  ))}
               </Tbody>
             </Table>
           </TableContainer>
@@ -160,11 +185,15 @@ const StockPage: React.FC = () => {
                     value={selectedMedicineId}
                     onChange={(e) => setSelectedMedicineId(e.target.value)}
                   >
-                    {Array.isArray(stock) && stock.map((item) => (
-                      <option key={item.medicine?._id} value={item.medicine?._id}>
-                        {item.medicine?.name}
-                      </option>
-                    ))}
+                    {Array.isArray(stock) &&
+                      stock.map((item) => (
+                        <option
+                          key={item.medicine?._id}
+                          value={item.medicine?._id}
+                        >
+                          {item.medicine?.name}
+                        </option>
+                      ))}
                   </Select>
                 </FormControl>
                 <FormControl mb="4">
@@ -172,15 +201,23 @@ const StockPage: React.FC = () => {
                   <Input
                     type="number"
                     value={quantityToUpdate}
-                    onChange={(e) => setQuantityToUpdate(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setQuantityToUpdate(parseInt(e.target.value))
+                    }
                   />
                 </FormControl>
               </ModalBody>
               <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={handleUpdateQuantity}>
+                <Button
+                  colorScheme="blue"
+                  mr={3}
+                  onClick={handleUpdateQuantity}
+                >
                   Save
                 </Button>
-                <Button variant="ghost" onClick={onClose}>Cancel</Button>
+                <Button variant="ghost" onClick={onClose}>
+                  Cancel
+                </Button>
               </ModalFooter>
             </ModalContent>
           </Modal>

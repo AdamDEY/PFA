@@ -2,7 +2,7 @@ import axios from "axios";
 import { create } from "zustand";
 import { jwtDecode } from "jwt-decode";
 
-const BASE_URL = "http://localhost:3000/distributor/api/v1/auth";
+const BASE_URL = "http://172.201.204.133:3000/distributor/api/v1/auth";
 
 interface UserDist {
   userName: string;
@@ -37,7 +37,7 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
 
       if (response.status === 201) {
         // console.log("response.data", response.data.data.result.response.accessToken  );
-        const  accessToken  = response.data.data.result.response.accessToken ;
+        const accessToken = response.data.data.result.response.accessToken;
         console.log("tokenDistributor", accessToken);
 
         const decodedToken: any = jwtDecode(accessToken);
@@ -46,7 +46,7 @@ export const useUserDistStore = create<UserDistStore>((set) => ({
           userName: decodedToken.username,
           userId: decodedToken.client_id,
         };
-        console.log('user',userDist )
+        console.log("user", userDist);
 
         localStorage.setItem("tokenDistributor", accessToken);
         set({ userDist });

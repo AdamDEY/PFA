@@ -1,18 +1,22 @@
 // Import necessary modules
-import { RouterProvider, createBrowserRouter, Navigate } from 'react-router-dom';
-import { ReactNode } from 'react';
-import { useUserStore } from './pharmacy/stores/user';
-import CartPage from './pharmacy/pages/cart page/CartPage';
-import HomePage from './pharmacy/pages/home page/HomePage';
-import LoginPage from './pharmacy/pages/login page/LoginPage';
-import MedicinesPage from './pharmacy/pages/medicine page/MedicinesPage';
-import MedicineWarehousePage from './pharmacy/pages/medicinewarehouse page/MedicineWarehousePage';
-import OrdersPage from './pharmacy/pages/orders page/OrdersPage';
-import WarehousesPage from './pharmacy/pages/warehouses page/WarehousesPage';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from "react-router-dom";
+import { ReactNode } from "react";
+import { useUserStore } from "./pharmacy/stores/user";
+import CartPage from "./pharmacy/pages/cart page/CartPage";
+import HomePage from "./pharmacy/pages/home page/HomePage";
+import LoginPage from "./pharmacy/pages/login page/LoginPage";
+import MedicinesPage from "./pharmacy/pages/medicine page/MedicinesPage";
+import MedicineWarehousePage from "./pharmacy/pages/medicinewarehouse page/MedicineWarehousePage";
+import OrdersPage from "./pharmacy/pages/orders page/OrdersPage";
+import WarehousesPage from "./pharmacy/pages/warehouses page/WarehousesPage";
 
-import StockPage from './distributor/pages/stockpage/StockPage';
-import Application from './distributor/application/Application';
-import NotificationPage from './pharmacy/pages/notificationpage/NotificationPage';
+import StockPage from "./distributor/pages/stockpage/StockPage";
+import Application from "./distributor/application/Application";
+import NotificationPage from "./pharmacy/pages/notificationpage/NotificationPage";
 
 // Define the router
 const router = createBrowserRouter([
@@ -22,31 +26,59 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <RequireAuth><HomePage /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <HomePage />
+      </RequireAuth>
+    ),
   },
   {
     path: "/medicines",
-    element: <RequireAuth><MedicinesPage /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <MedicinesPage />
+      </RequireAuth>
+    ),
   },
   {
     path: "/orders",
-    element: <RequireAuth><OrdersPage /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <OrdersPage />
+      </RequireAuth>
+    ),
   },
   {
     path: "/warehouses",
-    element: <RequireAuth><WarehousesPage /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <WarehousesPage />
+      </RequireAuth>
+    ),
   },
   {
     path: "/warehouses/:distributor_id",
-    element: <RequireAuth><MedicineWarehousePage /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <MedicineWarehousePage />
+      </RequireAuth>
+    ),
   },
   {
     path: "/cart",
-    element: <RequireAuth><CartPage /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <CartPage />
+      </RequireAuth>
+    ),
   },
   {
     path: "/notifications",
-    element: <RequireAuth><NotificationPage /></RequireAuth>,
+    element: (
+      <RequireAuth>
+        <NotificationPage />
+      </RequireAuth>
+    ),
   },
 ]);
 
@@ -58,9 +90,9 @@ function RequireAuth({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <RouterProvider router={router} />
-    // // <StockPage/>
-    // <Application/>
+    // <RouterProvider router={router} />
+    // {/* // // <StockPage /> */}
+    <Application />
   );
 }
 

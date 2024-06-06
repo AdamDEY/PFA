@@ -17,23 +17,21 @@ export type Medicine = {
 };
 function MedicinesPage() {
   const fetchMedicines = async () => {
-    const response = await axios.get("http://localhost:3000/medicine");
-    const result=response.data.data.result;
-    
-    result.map(async (medicine:any)=>{
+    const response = await axios.get("http://172.201.204.133:3000/medicine");
+    const result = response.data.data.result;
+
+    result.map(async (medicine: any) => {
       const imagePath = medicine.imageUrl;
-      const imageResponse= await axios.get(imagePath,{
-       
+      const imageResponse = await axios.get(imagePath, {
         headers: {
-            mode: 'no-cors',
-          }});
-      medicine['imageUrl']=imageResponse;
-    })
-    console.log('result', result);
+          mode: "no-cors",
+        },
+      });
+      medicine["imageUrl"] = imageResponse;
+    });
+    console.log("result", result);
     return result;
-
   };
-
 
   const { isLoading, isError, data, error } = useQuery<Medicine[]>({
     queryKey: ["medicines"],
@@ -67,7 +65,7 @@ function MedicinesPage() {
         <Box w="100%" h="100%" mt="8">
           <Stack p={0} justifyContent="center" alignItems="center">
             <Wrap spacing={4}>
-            {data?.map((med) => {
+              {data?.map((med) => {
                 console.log(med); // Log each medicine
                 return (
                   <MedicineCard
@@ -77,6 +75,7 @@ function MedicinesPage() {
                     description={med.description}
                     price={med.price}
                     reference={med.reference}
+                    footer={false}
                     _id={med._id}
                     __v={med.__v}
                   />
