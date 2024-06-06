@@ -2,7 +2,7 @@ import axios from "axios";
 import { create } from "zustand";
 import { jwtDecode } from "jwt-decode";
 
-const BASE_URL = "http://localhost:3000/pharmacy/api/v1/auth";
+const BASE_URL = "http://172.201.204.133:3000/pharmacy/api/v1/auth";
 
 interface User {
   userName: string;

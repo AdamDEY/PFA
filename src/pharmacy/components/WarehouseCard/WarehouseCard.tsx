@@ -76,8 +76,8 @@ function WarehouseCard(props: WarehouseCardProps) {
           </Box>
 
           <Flex >
-            <Box w="20px" h="20px" borderRadius="full" bg="green" mr="1" />
-            <Text>{'Status'}</Text>
+            <Box w="20px" h="20px" borderRadius="full" bg="red" mr="1" />
+            <Text>{'Closed'}</Text>
           </Flex>
         </Flex>
       </LinkBox>

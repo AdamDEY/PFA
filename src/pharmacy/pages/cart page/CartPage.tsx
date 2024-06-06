@@ -143,7 +143,7 @@ function CartPage() {
                           <Text fontWeight="bold" fontSize="lg">
                             {item.name}
                           </Text>
-                          <Text>{item.description}</Text>
+                          {/* <Text>{item.description}</Text> */}
                           <HStack>
                             <Text>Price: {item.price} DT</Text>
                             <Text>Quantity: {item.quantity}</Text>

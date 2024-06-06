@@ -47,7 +47,10 @@ export default function SideBar({ children }: { children: ReactNode }) {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/login"); 
+    localStorage.removeItem('cart');
+    
+    
   };
 
   return (
@@ -132,7 +135,7 @@ const SidebarContent = ({
       ))}
       <NavItem
         icon={null}
-        to="#"
+        
         onClick={handleLogout}
         _hover={{ bg: "white" }}
       >

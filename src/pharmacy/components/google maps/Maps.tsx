@@ -84,7 +84,7 @@ const Map = () => {
       const token = getToken();
 
       try {
-        const response = await axios.get('http://localhost:3000/pharmacy', {
+        const response = await axios.get('http://172.201.204.133:3000/pharmacy', {
           headers: {
             'Authorization': `Bearer ${token}`
           }

@@ -21,7 +21,7 @@ export const getFromLocalStorage = (key: string): FetchProps[] => {
 // HomePage component
 function HomePage() {
   const [distributors, setDistributors] = useState<FetchProps[]>([]);
-  const toast = useToast;
+  const toast = useToast();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -56,26 +56,9 @@ function HomePage() {
         saveToLocalStorage("distributors", distributorsData);
 
         setDistributors(distributorsData);
-        setLoading(false);
+        // setLoading(false);
 
-        const source = new EventSource(
-          "http://172.201.204.133:3000/order/confirmationMessage"
-        );
-
-        source.onmessage = function (event) {
-          toast({
-            title: "Success",
-            description:
-              "Your order has Been confirmed, and it is on their way to you",
-            status: "success",
-            duration: 3000,
-            position: "top-right",
-          });
-        };
-
-        source.onerror = function (error) {
-          console.error("EventSource error:", error);
-        };
+        
       } catch (error) {
         console.error("Error fetching distributors:", error);
         setError(error as Error);
@@ -90,6 +73,26 @@ function HomePage() {
     } else {
       fetchDistributors();
     }
+
+    const source = new EventSource(
+      "http://172.201.204.133:3000/order/confirmationMessage"
+    );
+
+    source.onmessage = function (event) {
+      toast({
+        title: "Success",
+        description:
+          "Your order has Been confirmed, and it is on their way to you",
+        status: "success",
+        duration: 3000,
+        position: "top-right",
+      });
+      console.log(event);
+    };
+
+    source.onerror = function (error) {
+      console.error("EventSource error:", error);
+    };
   }, []);
 
   if (loading) {

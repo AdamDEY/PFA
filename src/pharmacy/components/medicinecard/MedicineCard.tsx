@@ -94,7 +94,7 @@ function MedicineCard(props: MedicineProps) {
             </>
           )}
 
-          <Text>{description}</Text>
+          {/* <Text>{description}</Text> */}
           <Text color="green.600" fontSize="2xl">
             {price} Dinars Tunisien
           </Text>

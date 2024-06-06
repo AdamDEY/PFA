@@ -1,25 +1,30 @@
 import React, { useState } from "react";
 import {
   Box,
-  Button,
   Grid,
   GridItem,
-  Tab,
-  TabList,
-  TabPanel,
-  TabPanels,
+  Button,
   Table,
-  TableContainer,
-  Tabs,
-  Tbody,
-  Td,
-  Th,
   Thead,
+  Tbody,
   Tr,
+  Th,
+  Td,
+  TableContainer,
+  Flex,
   Collapse,
+  IconButton,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Badge,
+  Spinner,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import SideBar from "../../components/sidebar/SideBar";
 
 interface Distributor {
@@ -78,153 +83,126 @@ const fetchOrders = async (): Promise<Order[]> => {
       },
     }
   );
-  console.log("response", response.data.data.result);
   return response.data.data.result;
 };
 
-function OrdersPage() {
-  const { data, isLoading, isError, error } = useQuery<Order[]>({
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "NotConfirmed":
+      return "orange";
+    case "InPreparing":
+      return "blue";
+    case "Confirmed":
+      return "green";
+    case "Refused":
+      return "red";
+    case "Delivery":
+      return "blue";
+    default:
+      return "gray";
+  }
+};
+
+const OrdersPage = () => {
+  const { data: orders, isLoading, isError, error } = useQuery<Order[]>({
     queryKey: ["orders"],
     queryFn: fetchOrders,
   });
 
-  const [expandedRows, setExpandedRows] = useState<{ [key: string]: boolean }>(
-    {}
-  );
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [currentTab, setCurrentTab] = useState(0);
 
-  const handleShowMore = (orderId: string) => {
-    setExpandedRows((prev) => ({
-      ...prev,
-      [orderId]: !prev[orderId],
-    }));
+  const toggleExpand = (orderId: string) => {
+    setExpandedOrder(expandedOrder === orderId ? null : orderId);
+  };
+
+  const filterOrdersByStatus = (status: string) => {
+    if (!orders) return [];
+    if (status === "All") {
+      return orders;
+    }
+    return orders.filter((order) => {
+      if (status === "Pending") {
+        return order.status === "NotConfirmed";
+      } else if (status === "Processing") {
+        return order.status === "Delivery" || order.status === "InPreparing";
+      } else if (status === "Done") {
+        return order.status === "Confirmed";
+      }
+      return order.status === status;
+    });
+  };
+
+  const sortedOrders = (status: string) => {
+    const filteredOrders = filterOrdersByStatus(status);
+    return filteredOrders.sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Flex justify="center" align="center" height="100vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
   }
 
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return <Box>Error: {error.message}</Box>;
   }
 
   return (
     <Grid
       templateAreas={`
-    "nav main"
-    `}
-      gridTemplateColumns={"250px 1fr"}
+        "nav main"
+      `}
+      gridTemplateColumns={"240px 1fr"}
       h="100vh"
-      w="100vw" // Full height of the viewport
-      overflowX="auto"
+      w="98vw"
     >
       {/* Sidebar */}
       <GridItem area={"nav"}>
         <SideBar children={undefined} />
       </GridItem>
-
-      {/* Main Content Area */}
-      <GridItem area={"main"}>
-        <Box w="100%">
-          <Tabs p="5">
+      {/* Main Content */}
+      <GridItem area={"main"} ml="4">
+        <Box p="4">
+          <Tabs onChange={(index) => setCurrentTab(index)}>
             <TabList>
               <Tab>All</Tab>
               <Tab>Pending</Tab>
               <Tab>Processing</Tab>
               <Tab>Done</Tab>
             </TabList>
-
             <TabPanels>
               <TabPanel>
-                <Box>
-                  <TableContainer>
-                    <Table variant="striped">
-                      <Thead>
-                        <Tr>
-                          <Th>Order ID</Th>
-                          <Th>Created</Th>
-                          <Th>Warehouse</Th>
-                          <Th>Total Price</Th>
-                          <Th>Status</Th>
-                          <Th>Show more</Th>
-                        </Tr>
-                      </Thead>
-
-                      <Tbody>
-                        {data?.map((order: Order) => (
-                          <React.Fragment key={order._id}>
-                            <Tr>
-                              <Td>{order._id}</Td>
-                              <Td>
-                                {new Date(order.createdAt).toLocaleString()}
-                              </Td>
-                              <Td>
-                                {order.distributor
-                                  ? order.distributor.name
-                                  : "Unknown"}
-                              </Td>
-                              <Td>{order.total_price} DT</Td>
-                              <Td>{order.status}</Td>
-                              <Td>
-                                <Button
-                                  onClick={() => handleShowMore(order._id)}
-                                >
-                                  {expandedRows[order._id] ? "▼" : "▶"}
-                                </Button>
-                              </Td>
-                            </Tr>
-                            <Tr>
-                              <Td colSpan={6} p={0} m={0}>
-                                <Collapse in={expandedRows[order._id]}>
-                                  <Box
-                                    p={4}
-                                    borderWidth="1px"
-                                    borderRadius="lg"
-                                  >
-                                    <Table variant="simple">
-                                      <Thead>
-                                        <Tr>
-                                          <Th>Name</Th>
-                                          <Th>Total Price</Th>
-                                          <Th>Quantity</Th>
-                                        </Tr>
-                                      </Thead>
-                                      <Tbody>
-                                        {order.medicine_quantity.map(
-                                          (item, index) => (
-                                            <Tr key={index}>
-                                              <Td>
-                                                {item.medicine
-                                                  ? item.medicine.name
-                                                  : "Unknown"}
-                                              </Td>
-                                              <Td>
-                                                {item.medicineTotalPrice} DT
-                                              </Td>
-                                              <Td>{item.quantity}</Td>
-                                            </Tr>
-                                          )
-                                        )}
-                                      </Tbody>
-                                    </Table>
-                                  </Box>
-                                </Collapse>
-                              </Td>
-                            </Tr>
-                          </React.Fragment>
-                        ))}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                </Box>
+                <OrderTable
+                  orders={sortedOrders("All")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                />
               </TabPanel>
               <TabPanel>
-                <p>Pending orders!</p>
+                <OrderTable
+                  orders={sortedOrders("Pending")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                />
               </TabPanel>
               <TabPanel>
-                <p>Processing orders!</p>
+                <OrderTable
+                  orders={sortedOrders("Processing")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                />
               </TabPanel>
               <TabPanel>
-                <p>Done orders!</p>
+                <OrderTable
+                  orders={sortedOrders("Done")}
+                  expandedOrder={expandedOrder}
+                  toggleExpand={toggleExpand}
+                />
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -232,6 +210,95 @@ function OrdersPage() {
       </GridItem>
     </Grid>
   );
+};
+
+interface OrderTableProps {
+  orders: Order[];
+  expandedOrder: string | null;
+  toggleExpand: (orderId: string) => void;
 }
+
+const OrderTable: React.FC<OrderTableProps> = ({
+  orders,
+  expandedOrder,
+  toggleExpand,
+}) => {
+  return (
+    <TableContainer>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>Order ID</Th>
+            <Th>Created</Th>
+            <Th>Warehouse</Th>
+            <Th>Total Price</Th>
+            <Th>Status</Th>
+            <Th>Details</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {orders.map((order) => (
+            <React.Fragment key={order._id}>
+              <Tr>
+                <Td>{order._id}</Td>
+                <Td>{new Date(order.createdAt).toLocaleString()}</Td>
+                <Td>{order.distributor ? order.distributor.name : "Unknown"}</Td>
+                <Td>{order.total_price} DT</Td>
+                <Td>
+                  <Badge colorScheme={getStatusColor(order.status)}>
+                    {order.status}
+                  </Badge>
+                </Td>
+                <Td>
+                  <IconButton
+                    aria-label="Expand order details"
+                    icon={
+                      expandedOrder === order._id ? (
+                        <ChevronUpIcon />
+                      ) : (
+                        <ChevronDownIcon />
+                      )
+                    }
+                    onClick={() => toggleExpand(order._id)}
+                    size="sm"
+                    variant="ghost"
+                  />
+                </Td>
+              </Tr>
+              <Tr>
+                <Td colSpan={6} p={0}>
+                  <Collapse in={expandedOrder === order._id}>
+                    <Box p="4" bg="gray.50" rounded="md">
+                      <Table size="sm" variant="simple">
+                        <Thead>
+                          <Tr>
+                            <Th>Name</Th>
+                            <Th>Total Price</Th>
+                            <Th>Quantity</Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {order.medicine_quantity.map((item, index) => (
+                            <Tr key={index}>
+                              <Td>
+                                {item.medicine ? item.medicine.name : "Unknown"}
+                              </Td>
+                              <Td>{item.medicineTotalPrice} DT</Td>
+                              <Td>{item.quantity}</Td>
+                            </Tr>
+                          ))}
+                        </Tbody>
+                      </Table>
+                    </Box>
+                  </Collapse>
+                </Td>
+              </Tr>
+            </React.Fragment>
+          ))}
+        </Tbody>
+      </Table>
+    </TableContainer>
+  );
+};
 
 export default OrdersPage;
